@@ -7,6 +7,12 @@ import type { Product } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Price, ProductBadge, Rating } from "@/components/ui/misc";
 import { useStore } from "@/components/store/store-provider";
+import { useT } from "@/components/i18n/language-provider";
+import {
+  productName,
+  productSubName,
+  productTagline,
+} from "@/lib/i18n/content";
 
 export function ProductCard({
   product,
@@ -18,6 +24,7 @@ export function ProductCard({
   compact?: boolean;
 }) {
   const { addToCart, isWished, toggleWish, hydrated } = useStore();
+  const t = useT();
   const wished = hydrated && isWished(product.id);
   const defaultSize = product.sizes.includes("double") ? "double" : product.sizes[0];
 
@@ -27,12 +34,12 @@ export function ProductCard({
         <Link
           href={`/product/${product.slug}`}
           className="block"
-          aria-label={`View ${product.name}`}
+          aria-label={product.name}
         >
           <div className="relative aspect-[4/5] w-full">
             <Image
               src={product.images[0]}
-              alt={`${product.name} — handmade Gujarati godadi`}
+              alt={productName(product, t)}
               fill
               sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
               priority={priority}
@@ -55,7 +62,7 @@ export function ProductCard({
           <button
             type="button"
             onClick={() => toggleWish(product.id)}
-            aria-label={wished ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
+            aria-label={`${wished ? t.toast.removedFromWishlist : t.common.saveForLater}: ${product.name}`}
             aria-pressed={wished}
             className="pointer-events-auto ml-auto grid h-9 w-9 place-items-center rounded-full bg-card/90 text-clay-400 shadow-soft backdrop-blur transition-all hover:scale-105 hover:text-terracotta-500"
           >
@@ -70,7 +77,7 @@ export function ProductCard({
 
         {product.stock <= 12 && (
           <span className="pointer-events-none absolute bottom-3 left-3 rounded-full bg-inverse/85 px-2.5 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.09em] text-on-inverse backdrop-blur">
-            Only {product.stock} left
+            {t.common.onlyLeft(product.stock)}
           </span>
         )}
 
@@ -84,7 +91,7 @@ export function ProductCard({
               className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-inverse text-sm font-medium text-on-accent shadow-lift transition-colors hover:bg-terracotta-500"
             >
               <ShoppingBag className="h-4 w-4" />
-              Add to Cart
+              {t.common.addToCart}
             </button>
           </div>
         )}
@@ -94,16 +101,16 @@ export function ProductCard({
         <div className="flex items-start justify-between gap-2">
           <h3 className="font-display text-[1.02rem] leading-snug text-clay-600">
             <Link href={`/product/${product.slug}`} className="link-underline">
-              {product.name}
+              {productName(product, t)}
             </Link>
           </h3>
         </div>
-        <p className="mt-1 font-gujarati text-[0.8rem] text-clay-300">
-          {product.gujaratiName}
+        <p className="mt-1 text-[0.8rem] text-clay-300">
+          {productSubName(product, t)}
         </p>
         {!compact && (
           <p className="mt-1.5 line-clamp-2 text-[0.82rem] leading-relaxed text-clay-300">
-            {product.tagline}
+            {productTagline(product, t)}
           </p>
         )}
         <div className="mt-2">
@@ -120,7 +127,7 @@ export function ProductCard({
             className="mt-3 flex h-10 w-full items-center justify-center gap-2 rounded-full border border-clay-200 text-[0.82rem] font-medium text-clay-500 transition-colors hover:border-terracotta-300 hover:bg-terracotta-50 hover:text-terracotta-500 lg:hidden"
           >
             <ShoppingBag className="h-4 w-4" />
-            Add to Cart
+            {t.common.addToCart}
           </button>
         )}
       </div>

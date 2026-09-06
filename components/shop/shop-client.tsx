@@ -11,25 +11,21 @@ import {
   ProductCardSkeleton,
   SectionHeading,
 } from "@/components/ui/misc";
-import { CATEGORIES, PRICE_BOUNDS, PRODUCTS, SIZES, SIZE_ORDER } from "@/lib/data/products";
+import { CATEGORIES, PRICE_BOUNDS, PRODUCTS, SIZE_ORDER } from "@/lib/data/products";
+import { useT } from "@/components/i18n/language-provider";
+import { categoryName } from "@/lib/i18n/content";
 import type { CategoryKey, SizeKey } from "@/lib/types";
 import { cn, inr } from "@/lib/utils";
 
-const SORTS = [
-  { key: "featured", label: "Featured" },
-  { key: "price-asc", label: "Price: Low to High" },
-  { key: "price-desc", label: "Price: High to Low" },
-  { key: "newest", label: "Newest" },
-  { key: "rating", label: "Best Rated" },
-] as const;
-
-type SortKey = (typeof SORTS)[number]["key"];
+const SORT_KEYS = ["featured", "price-asc", "price-desc", "newest", "rating"] as const;
+type SortKey = (typeof SORT_KEYS)[number];
 
 const PRICE_STEPS = [899, 1299, 1499, 1799, 2799];
 
 export function ShopClient() {
   const params = useSearchParams();
   const router = useRouter();
+  const t = useT();
 
   const [q, setQ] = useState(params.get("q") ?? "");
   const [cats, setCats] = useState<CategoryKey[]>(
@@ -112,7 +108,7 @@ export function ShopClient() {
   const Filters = (
     <div className="space-y-8">
       <fieldset>
-        <legend className="kicker mb-3.5">Category</legend>
+        <legend className="kicker mb-3.5">{t.shop.category}</legend>
         <ul className="space-y-2.5">
           {CATEGORIES.map((c) => (
             <li key={c.key}>
@@ -123,7 +119,7 @@ export function ShopClient() {
                   onChange={() => toggle(cats, c.key, setCats)}
                   className="h-4 w-4 rounded border-cream-500 text-terracotta-500 accent-terracotta-500"
                 />
-                <span className="flex-1">{c.name}</span>
+                <span className="flex-1">{categoryName(c, t)}</span>
                 <span className="text-[0.72rem] text-clay-200">
                   {PRODUCTS.filter((p) => p.categories.includes(c.key)).length}
                 </span>
@@ -134,7 +130,7 @@ export function ShopClient() {
       </fieldset>
 
       <fieldset>
-        <legend className="kicker mb-3.5">Size</legend>
+        <legend className="kicker mb-3.5">{t.common.size}</legend>
         <div className="flex flex-wrap gap-2">
           {SIZE_ORDER.map((s) => (
             <button
@@ -149,14 +145,14 @@ export function ShopClient() {
                   : "border-cream-500 bg-card text-clay-400 hover:border-clay-200",
               )}
             >
-              {SIZES[s].label}
+              {t.sizes[s]}
             </button>
           ))}
         </div>
       </fieldset>
 
       <fieldset>
-        <legend className="kicker mb-3.5">Price</legend>
+        <legend className="kicker mb-3.5">{t.shop.price}</legend>
         <input
           type="range"
           min={PRICE_BOUNDS.min}
@@ -169,7 +165,7 @@ export function ShopClient() {
         />
         <div className="mt-2 flex justify-between text-[0.78rem] text-clay-300">
           <span>{inr(PRICE_BOUNDS.min)}</span>
-          <span className="font-semibold text-clay-500">Up to {inr(maxPrice)}</span>
+          <span className="font-semibold text-clay-500">{t.shop.upTo} {inr(maxPrice)}</span>
         </div>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {PRICE_STEPS.map((p) => (
@@ -192,7 +188,7 @@ export function ShopClient() {
 
       {activeCount > 0 && (
         <Button variant="subtle" size="sm" full onClick={reset}>
-          Clear all filters
+          {t.shop.clearAll}
         </Button>
       )}
     </div>
@@ -204,10 +200,10 @@ export function ShopClient() {
         <div className="container">
           <SectionHeading
             align="left"
-            kicker="The collection"
-            title="Shop Our Godadi"
-            gujarati="અમારી ગોદડીઓ"
-            description="Sixteen designs, all pieced and quilted by hand. Filter by size, price or the room you have in mind."
+            kicker={t.shop.kicker}
+            title={t.shop.title}
+            gujarati={t.shop.titleGu}
+            description={t.shop.desc}
           />
         </div>
       </section>
@@ -222,8 +218,8 @@ export function ShopClient() {
                 <Input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search godadi…"
-                  aria-label="Search products"
+                  placeholder={t.shop.searchPlaceholder}
+                  aria-label={t.search.label}
                   className="h-11 pl-10"
                 />
               </div>
@@ -239,8 +235,8 @@ export function ShopClient() {
                 <Input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search godadi…"
-                  aria-label="Search products"
+                  placeholder={t.shop.searchPlaceholder}
+                  aria-label={t.search.label}
                   className="h-11 pl-10"
                 />
               </div>
@@ -252,7 +248,7 @@ export function ShopClient() {
                 onClick={() => setFiltersOpen(true)}
               >
                 <SlidersHorizontal className="h-4 w-4" />
-                Filters
+                {t.shop.filters}
                 {activeCount > 0 && (
                   <span className="ml-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-terracotta-500 px-1 text-[0.65rem] font-bold text-on-accent">
                     {activeCount}
@@ -261,8 +257,9 @@ export function ShopClient() {
               </Button>
 
               <p className="hidden text-[0.85rem] text-clay-300 lg:block">
-                <span className="font-semibold text-clay-500">{results.length}</span>{" "}
-                {results.length === 1 ? "godadi" : "godadis"}
+                <span className="font-semibold text-clay-500">
+                  {t.shop.count(results.length)}
+                </span>
               </p>
 
               <div className="ml-auto flex items-center gap-2">
@@ -270,7 +267,7 @@ export function ShopClient() {
                   htmlFor="sort"
                   className="hidden text-[0.8rem] text-clay-300 sm:block"
                 >
-                  Sort by
+                  {t.shop.sortBy}
                 </label>
                 <Select
                   id="sort"
@@ -278,9 +275,17 @@ export function ShopClient() {
                   onChange={(e) => setSort(e.target.value as SortKey)}
                   className="w-[11.5rem]"
                 >
-                  {SORTS.map((s) => (
-                    <option key={s.key} value={s.key}>
-                      {s.label}
+                  {SORT_KEYS.map((k) => (
+                    <option key={k} value={k}>
+                      {
+                        {
+                          featured: t.shop.sort.featured,
+                          "price-asc": t.shop.sort.priceAsc,
+                          "price-desc": t.shop.sort.priceDesc,
+                          newest: t.shop.sort.newest,
+                          rating: t.shop.sort.rating,
+                        }[k]
+                      }
                     </option>
                   ))}
                 </Select>
@@ -296,20 +301,20 @@ export function ShopClient() {
                 {cats.map((c) => (
                   <Chip
                     key={c}
-                    label={CATEGORIES.find((x) => x.key === c)!.name}
+                    label={categoryName(CATEGORIES.find((x) => x.key === c)!, t)}
                     onClear={() => toggle(cats, c, setCats)}
                   />
                 ))}
                 {sizes.map((s) => (
                   <Chip
                     key={s}
-                    label={SIZES[s].label}
+                    label={t.sizes[s]}
                     onClear={() => toggle(sizes, s, setSizes)}
                   />
                 ))}
                 {maxPrice < PRICE_BOUNDS.max && (
                   <Chip
-                    label={`Under ${inr(maxPrice)}`}
+                    label={`${t.shop.upTo} ${inr(maxPrice)}`}
                     onClear={() => setMaxPrice(PRICE_BOUNDS.max)}
                   />
                 )}
@@ -326,10 +331,10 @@ export function ShopClient() {
             ) : results.length === 0 ? (
               <EmptyState
                 icon={PackageSearch}
-                title="No godadi matches those filters."
-                gujarati="કોઈ ગોદડી મળી નથી."
-                description="Try widening the price range or clearing a filter or two."
-                actionLabel="Clear all filters"
+                title={t.shop.emptyTitle}
+                gujarati={t.shop.emptyGu}
+                description={t.shop.emptyDesc}
+                actionLabel={t.shop.clearAll}
                 onAction={reset}
                 className="rounded-2xl border border-dashed border-cream-500"
               />
@@ -358,11 +363,11 @@ export function ShopClient() {
           />
           <div className="absolute inset-x-0 bottom-0 max-h-[86vh] animate-slide-up overflow-y-auto rounded-t-3xl bg-cream-100 p-5 shadow-drawer">
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="font-display text-xl text-clay-600">Filters</h2>
+              <h2 className="font-display text-xl text-clay-600">{t.shop.filters}</h2>
               <button
                 type="button"
                 onClick={() => setFiltersOpen(false)}
-                aria-label="Close filters"
+                aria-label={t.common.close}
                 className="grid h-10 w-10 place-items-center rounded-full text-clay-400 hover:bg-cream-300"
               >
                 <X className="h-5 w-5" />
@@ -370,7 +375,7 @@ export function ShopClient() {
             </div>
             {Filters}
             <Button full size="lg" className="mt-7" onClick={() => setFiltersOpen(false)}>
-              Show {results.length} {results.length === 1 ? "godadi" : "godadis"}
+              {t.shop.showResults(results.length)}
             </Button>
           </div>
         </div>
@@ -386,7 +391,7 @@ function Chip({ label, onClear }: { label: string; onClear: () => void }) {
       <button
         type="button"
         onClick={onClear}
-        aria-label={`Remove ${label} filter`}
+        aria-label={`${label}`}
         className="grid h-5 w-5 place-items-center rounded-full text-clay-200 transition-colors hover:bg-cream-300 hover:text-clay-500"
       >
         <X className="h-3 w-3" />

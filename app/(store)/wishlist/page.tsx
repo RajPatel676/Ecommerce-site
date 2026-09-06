@@ -7,23 +7,26 @@ import { useStore } from "@/components/store/store-provider";
 import { Button } from "@/components/ui/button";
 import { EmptyState, Price, ProductCardSkeleton, Rating } from "@/components/ui/misc";
 import { PRODUCTS } from "@/lib/data/products";
+import { useT } from "@/components/i18n/language-provider";
+import { productName, productSubName } from "@/lib/i18n/content";
 
 export default function WishlistPage() {
   const { wishlist, toggleWish, addToCart, hydrated } = useStore();
+  const t = useT();
   const saved = PRODUCTS.filter((p) => wishlist.includes(p.id));
 
   return (
     <div className="container py-8 lg:py-12">
       <div className="mb-8">
         <h1 className="text-[1.9rem] leading-tight text-clay-600 sm:text-[2.3rem]">
-          Wishlist
+          {t.wishlist.title}
         </h1>
         <p className="mt-1.5 text-[0.9rem] text-clay-300">
           {hydrated
             ? saved.length === 0
-              ? "Nothing saved yet."
-              : `${saved.length} ${saved.length === 1 ? "godadi" : "godadis"} saved for later.`
-            : "Loading your saved godadis…"}
+              ? t.wishlist.nothing
+              : t.wishlist.saved(saved.length)
+            : t.wishlist.loading}
         </p>
       </div>
 
@@ -36,10 +39,10 @@ export default function WishlistPage() {
       ) : saved.length === 0 ? (
         <EmptyState
           icon={Heart}
-          title="Save the ones you love."
-          gujarati="તમને ગમતી ગોદડીઓ અહીં સાચવો."
-          description="Tap the heart on any godadi and it will wait for you here."
-          actionLabel="Explore Godadi"
+          title={t.wishlist.emptyTitle}
+          gujarati={t.wishlist.emptyGu}
+          description={t.wishlist.emptyDesc}
+          actionLabel={t.common.exploreGodadi}
           actionHref="/shop"
           className="rounded-3xl border border-dashed border-cream-500 bg-cream-200"
         />
@@ -56,7 +59,7 @@ export default function WishlistPage() {
               >
                 <Image
                   src={p.images[0]}
-                  alt={p.name}
+                  alt={productName(p, t)}
                   fill
                   sizes="(max-width:640px) 100vw, 112px"
                   className="object-cover"
@@ -68,10 +71,10 @@ export default function WishlistPage() {
                   href={`/product/${p.slug}`}
                   className="font-display text-[1.08rem] leading-snug text-clay-600 hover:text-terracotta-500"
                 >
-                  {p.name}
+                  {productName(p, t)}
                 </Link>
-                <p className="mt-0.5 font-gujarati text-[0.8rem] text-clay-300">
-                  {p.gujaratiName}
+                <p className="mt-0.5 text-[0.8rem] text-clay-300">
+                  {productSubName(p, t)}
                 </p>
                 <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1.5">
                   <Rating value={p.rating} count={p.reviewCount} />
@@ -91,12 +94,12 @@ export default function WishlistPage() {
                   }
                 >
                   <ShoppingBag className="h-4 w-4" />
-                  Add to Cart
+                  {t.common.addToCart}
                 </Button>
                 <Button
                   variant="outline"
                   size="icon"
-                  aria-label={`Remove ${p.name} from wishlist`}
+                  aria-label={`${t.common.remove} ${p.name}`}
                   onClick={() => toggleWish(p.id)}
                 >
                   <Trash2 className="h-4 w-4" />

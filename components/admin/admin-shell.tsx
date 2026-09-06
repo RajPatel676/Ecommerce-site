@@ -17,20 +17,25 @@ import {
 } from "lucide-react";
 import { useStore } from "@/components/store/store-provider";
 import { ThemePicker } from "@/components/theme/theme-picker";
+import { LanguagePicker } from "@/components/i18n/language-picker";
+import { useT } from "@/components/i18n/language-provider";
+import type { Dict } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-const NAV = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
-  { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
-  { href: "/admin/products", label: "Products", icon: Package },
-  { href: "/admin/customers", label: "Customers", icon: Users },
-  { href: "/admin/coupons", label: "Coupons", icon: Ticket },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
+const navFor = (t: Dict) => [
+  { href: "/admin", label: t.admin.dashboard, icon: LayoutDashboard, exact: true, key: "dashboard" },
+  { href: "/admin/orders", label: t.admin.orders, icon: ShoppingCart, key: "orders" },
+  { href: "/admin/products", label: t.admin.products, icon: Package, key: "products" },
+  { href: "/admin/customers", label: t.admin.customers, icon: Users, key: "customers" },
+  { href: "/admin/coupons", label: t.admin.coupons, icon: Ticket, key: "coupons" },
+  { href: "/admin/settings", label: t.admin.settings, icon: Settings, key: "settings" },
 ];
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { toast, orders, hydrated } = useStore();
+  const t = useT();
+  const NAV = navFor(t);
   const [open, setOpen] = useState(false);
 
   useEffect(() => setOpen(false), [pathname]);
@@ -49,16 +54,16 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       <div className="flex items-center justify-between px-5 py-5">
         <Link href="/admin" className="flex flex-col leading-none">
           <span className="font-gujarati text-[1.05rem] font-semibold text-on-inverse">
-            વસુંધરા ગોદડી
+            હંસાબેન ગોદડી
           </span>
           <span className="mt-1 text-[0.55rem] font-semibold uppercase tracking-[0.3em] text-mustard-200">
-            Admin
+            {t.admin.admin}
           </span>
         </Link>
         <button
           type="button"
           onClick={() => setOpen(false)}
-          aria-label="Close menu"
+          aria-label={t.common.close}
           className="grid h-9 w-9 place-items-center rounded-full text-on-inverse-muted/70 hover:bg-inverse-2 lg:hidden"
         >
           <X className="h-5 w-5" />
@@ -79,7 +84,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           >
             <n.icon className="h-[1.05rem] w-[1.05rem]" />
             {n.label}
-            {n.label === "Orders" && pending > 0 && (
+            {n.key === "orders" && pending > 0 && (
               <span className="ml-auto rounded-full bg-terracotta-500 px-1.5 py-0.5 text-[0.65rem] font-bold text-on-accent">
                 {pending}
               </span>
@@ -94,20 +99,20 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           className="flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[0.85rem] text-on-inverse-muted/70 transition-colors hover:bg-inverse-2/60 hover:text-on-inverse"
         >
           <ArrowUpRight className="h-[1.05rem] w-[1.05rem]" />
-          View storefront
+          {t.admin.viewStorefront}
         </Link>
         <button
           type="button"
           onClick={() =>
             toast({
-              title: "Logged out",
-              description: "Prototype only — no session was ended.",
+              title: t.account.signedOut,
+              description: t.account.signedOutDesc,
             })
           }
           className="flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-[0.85rem] text-on-inverse-muted/70 transition-colors hover:bg-inverse-2/60 hover:text-on-inverse"
         >
           <LogOut className="h-[1.05rem] w-[1.05rem]" />
-          Logout
+          {t.admin.logout}
         </button>
       </div>
     </div>
@@ -138,21 +143,23 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            aria-label="Open admin menu"
+            aria-label={t.admin.openMenu}
             className="grid h-10 w-10 place-items-center rounded-full text-clay-500 hover:bg-cream-300"
           >
             <Menu className="h-5 w-5" />
           </button>
           <span className="font-gujarati text-[1rem] font-semibold text-clay-600">
-            વસુંધરા ગોદડી
+            હંસાબેન ગોદડી
           </span>
           <span className="ml-auto text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-terracotta-500">
-            Admin
+            {t.admin.admin}
           </span>
+          <LanguagePicker />
           <ThemePicker />
         </header>
 
-        <div className="hidden items-center justify-end border-b border-cream-400 bg-cream-100 px-4 py-2 lg:flex">
+        <div className="hidden items-center justify-end gap-1 border-b border-cream-400 bg-cream-100 px-4 py-2 lg:flex">
+          <LanguagePicker />
           <ThemePicker />
         </div>
 

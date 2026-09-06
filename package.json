@@ -1,8 +1,8 @@
 {
-  "name": "vasundhara-godadi",
+  "name": "hansaben-godadi",
   "version": "1.0.0",
   "private": true,
-  "description": "Vasundhara Godadi — a frontend prototype for a traditional Gujarati handmade godadi brand.",
+  "description": "Hansaben Godadi — a frontend prototype for a traditional Gujarati handmade godadi brand.",
   "scripts": {
     "dev": "next dev --turbo",
     "dev:webpack": "next dev",

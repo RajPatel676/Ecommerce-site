@@ -1,22 +1,26 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Hand, Leaf, MapPin, RotateCcw } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { cn } from "@/lib/utils";
-
-const TRUST = [
-  { icon: Hand, label: "Handmade" },
-  { icon: Leaf, label: "Premium Cotton" },
-  { icon: MapPin, label: "Made in Gujarat" },
-  { icon: RotateCcw, label: "Easy Returns" },
-];
+import { useT } from "@/components/i18n/language-provider";
 
 export function Hero() {
+  const t = useT();
+  const TRUST = [
+    { icon: Hand, label: t.home.trust.handmade },
+    { icon: Leaf, label: t.home.trust.cotton },
+    { icon: MapPin, label: t.home.trust.gujarat },
+    { icon: RotateCcw, label: t.home.trust.returns },
+  ];
+
   return (
     <section className="relative overflow-hidden bg-cream-200 weave">
       <div className="container grid items-center gap-10 py-12 lg:grid-cols-[1fr_1.05fr] lg:gap-16 lg:py-20">
         <div className="animate-fade-up">
-          <p className="kicker mb-5">Est. Vadodara · Handmade in Gujarat</p>
+          <p className="kicker mb-5">{t.home.kicker}</p>
 
           <h1 className="font-gujarati text-[2.15rem] font-semibold leading-[1.25] text-clay-600 sm:text-[2.9rem] lg:text-[3.4rem]">
             ઘરની હૂંફ,
@@ -25,22 +29,21 @@ export function Hero() {
           </h1>
 
           <p className="mt-5 max-w-md font-gujarati text-[1rem] leading-relaxed text-clay-400 sm:text-[1.08rem]">
-            પરંપરાગત ગુજરાતી ગોદડી, આજે તમારા ઘર સુધી.
+            {t.home.heroSupport}
           </p>
           <p className="mt-2.5 max-w-md text-[0.95rem] leading-relaxed text-clay-300">
-            Handcrafted warmth, made with tradition — pieced block by block, then
-            quilted by hand.
+            {t.home.heroSupportEn}
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/shop" className={cn(buttonVariants({ size: "lg" }))}>
-              Shop Godadi
+              {t.home.shopGodadi}
             </Link>
             <Link
               href="/about"
               className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
             >
-              Our Story
+              {t.home.ourStory}
             </Link>
           </div>
 
@@ -78,10 +81,10 @@ export function Hero() {
               </div>
               <div>
                 <p className="text-[0.7rem] uppercase tracking-[0.14em] text-clay-300">
-                  Hand-quilted
+                  {t.home.handQuilted}
                 </p>
                 <p className="font-display text-[0.95rem] text-clay-600">
-                  9 stitches / inch
+                  {t.home.stitchesPerInch}
                 </p>
               </div>
             </div>

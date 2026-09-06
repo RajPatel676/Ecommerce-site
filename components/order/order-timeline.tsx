@@ -1,7 +1,9 @@
+"use client";
+
 import { Check, Circle, XCircle } from "lucide-react";
 import type { Order, OrderStatus } from "@/lib/types";
 import { TRACKING_FLOW } from "@/lib/types";
-import { STEP_LABEL, STEP_NOTE } from "@/lib/status";
+import { useT } from "@/components/i18n/language-provider";
 import { cn, formatDateTime } from "@/lib/utils";
 
 export function OrderTimeline({
@@ -11,6 +13,7 @@ export function OrderTimeline({
   order: Order;
   compact?: boolean;
 }) {
+  const tr = useT();
   const done = new Map(order.timeline.map((t) => [t.status, t]));
   const cancelled = order.status === "cancelled";
   const currentIndex = cancelled ? -1 : TRACKING_FLOW.indexOf(order.status);
@@ -80,18 +83,18 @@ export function OrderTimeline({
                   isDone || isCurrent ? "text-clay-600" : "text-clay-200",
                 )}
               >
-                {STEP_LABEL[s]}
+                {tr.step[s]}
               </p>
               {event ? (
                 <p className="mt-0.5 text-[0.8rem] tabular-nums text-clay-400">
                   {formatDateTime(event.at)}
                 </p>
               ) : (
-                <p className="mt-0.5 text-[0.8rem] text-clay-200">Pending</p>
+                <p className="mt-0.5 text-[0.8rem] text-clay-200">{tr.track.pending}</p>
               )}
               {!compact && (isDone || isCurrent) && (
                 <p className="mt-1 text-[0.8rem] leading-relaxed text-clay-300">
-                  {event?.note ?? STEP_NOTE[s]}
+                  {tr.stepNote[s]}
                 </p>
               )}
             </div>

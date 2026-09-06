@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Hand, Heart, Leaf, MapPin, Quote } from "lucide-react";
@@ -7,28 +9,15 @@ import { SectionHeading } from "@/components/ui/misc";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { CATEGORIES, featuredProducts } from "@/lib/data/products";
 import { cn } from "@/lib/utils";
+import { useT } from "@/components/i18n/language-provider";
+import { categoryBlurb, categoryName } from "@/lib/i18n/content";
+import type { Dict } from "@/lib/i18n";
 
-const WHY = [
-  {
-    icon: Hand,
-    title: "100% Handmade",
-    body: "Carefully crafted with traditional techniques — cut, pieced and quilted by hand.",
-  },
-  {
-    icon: Leaf,
-    title: "Premium Cotton",
-    body: "Soft, breathable and comfortable, sourced from mills we have worked with for years.",
-  },
-  {
-    icon: MapPin,
-    title: "Made in Gujarat",
-    body: "Inspired by the colours and culture of Gujarat, made by artisans across the state.",
-  },
-  {
-    icon: Heart,
-    title: "Made With Love",
-    body: "Every piece carries the touch of the hands that made it — no two are quite alike.",
-  },
+const why = (t: Dict) => [
+  { icon: Hand, ...t.home.why.handmade },
+  { icon: Leaf, ...t.home.why.cotton },
+  { icon: MapPin, ...t.home.why.gujarat },
+  { icon: Heart, ...t.home.why.love },
 ];
 
 const REVIEWS = [
@@ -53,7 +42,9 @@ const REVIEWS = [
 ];
 
 export default function HomePage() {
+  const t = useT();
   const featured = featuredProducts();
+  const WHY = why(t);
 
   return (
     <>
@@ -62,10 +53,10 @@ export default function HomePage() {
       {/* ------------------------------------------------------- categories */}
       <section className="container py-16 lg:py-24">
         <SectionHeading
-          kicker="Browse the collection"
-          title="Find Your Perfect Godadi"
-          gujarati="તમારી ગોદડી શોધો"
-          description="Six ways in, depending on the bed you are buying for and how heavy you like it."
+          kicker={t.home.categoriesKicker}
+          title={t.home.categoriesTitle}
+          gujarati={t.home.categoriesGu}
+          description={t.home.categoriesDesc}
         />
 
         <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-3 lg:gap-5">
@@ -78,7 +69,7 @@ export default function HomePage() {
               <div className="relative aspect-[4/3] w-full">
                 <Image
                   src={c.image}
-                  alt={c.name}
+                  alt={categoryName(c, t)}
                   fill
                   sizes="(max-width:768px) 50vw, 33vw"
                   priority={i < 3}
@@ -87,17 +78,14 @@ export default function HomePage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-inverse/95 via-inverse/65 to-inverse/5" />
               </div>
               <div className="absolute inset-x-0 bottom-0 p-4 lg:p-5">
-                <p className="font-gujarati text-[0.75rem] text-on-inverse-muted">
-                  {c.gujarati}
-                </p>
-                <h3 className="mt-0.5 font-display text-[1.05rem] leading-tight text-on-inverse lg:text-[1.2rem]">
-                  {c.name}
+                <h3 className="font-display text-[1.05rem] leading-tight text-on-inverse lg:text-[1.2rem]">
+                  {categoryName(c, t)}
                 </h3>
                 <p className="mt-1 hidden text-[0.8rem] leading-snug text-on-inverse-muted sm:block">
-                  {c.blurb}
+                  {categoryBlurb(c, t)}
                 </p>
                 <span className="mt-2 inline-flex items-center gap-1.5 text-[0.75rem] font-medium text-mustard-200 opacity-0 transition-all duration-300 group-hover:opacity-100">
-                  Shop now <ArrowRight className="h-3.5 w-3.5" />
+                  {t.common.shopNow} <ArrowRight className="h-3.5 w-3.5" />
                 </span>
               </div>
             </Link>
@@ -110,15 +98,15 @@ export default function HomePage() {
         <div className="container">
           <SectionHeading
             align="left"
-            kicker="Bestsellers"
-            title="Our Favourite Godadi"
-            gujarati="અમારી પસંદની ગોદડી"
+            kicker={t.home.featuredKicker}
+            title={t.home.featuredTitle}
+            gujarati={t.home.featuredGu}
             action={
               <Link
                 href="/shop"
                 className="group inline-flex shrink-0 items-center gap-2 text-[0.88rem] font-medium text-terracotta-500"
               >
-                View all godadi
+                {t.common.viewAll}
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
             }
@@ -135,8 +123,8 @@ export default function HomePage() {
       {/* -------------------------------------------------------- why us */}
       <section className="container py-16 lg:py-24">
         <SectionHeading
-          kicker="Why Vasundhara"
-          title="Four things we will not compromise on"
+          kicker={t.home.whyKicker}
+          title={t.home.whyTitle}
         />
         <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-10">
           {WHY.map((w) => (
@@ -168,25 +156,22 @@ export default function HomePage() {
 
           <div>
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-mustard-200">
-              Our craft
+              {t.home.storyKicker}
             </p>
             <h2 className="mt-3 text-[1.9rem] leading-tight text-on-inverse sm:text-[2.4rem]">
-              Every Godadi Has A Story.
+              {t.home.storyTitle}
             </h2>
             <p className="mt-6 font-gujarati text-[1.02rem] leading-[1.9] text-on-inverse-muted/90">
-              અમારી ગોદડીઓ માત્ર કપડાંના ટુકડાઓથી બનેલી નથી. તેમાં સમય, મહેનત અને
-              પરંપરાની હૂંફ જોડાયેલી છે.
+              {t.home.storyGu}
             </p>
             <p className="mt-5 text-[0.95rem] leading-relaxed text-on-inverse-muted/70">
-              From carefully selected fabrics to the final stitch, every Godadi is
-              created with patience and care. Inspired by generations of Gujarati
-              textile traditions, we bring that warmth into modern homes.
+              {t.home.storyBody}
             </p>
             <Link
               href="/about"
               className="group mt-8 inline-flex items-center gap-2 border-b border-mustard-200/50 pb-1 text-[0.92rem] font-medium text-mustard-200"
             >
-              Read Our Story
+              {t.common.readOurStory}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
@@ -196,8 +181,8 @@ export default function HomePage() {
       {/* ---------------------------------------------------------- reviews */}
       <section className="container py-16 lg:py-24">
         <SectionHeading
-          kicker="From our customers"
-          title="Kept, washed, and handed down"
+          kicker={t.home.reviewsKicker}
+          title={t.home.reviewsTitle}
         />
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {REVIEWS.map((r) => (
@@ -230,21 +215,20 @@ export default function HomePage() {
           />
           <div className="relative bg-cream-100/85 px-6 py-14 text-center backdrop-blur-[2px] sm:px-12">
             <h2 className="text-[1.7rem] leading-tight text-clay-600 sm:text-[2.1rem]">
-              Not sure which size you need?
+              {t.home.ctaTitle}
             </h2>
             <p className="mx-auto mt-3 max-w-md text-[0.92rem] leading-relaxed text-clay-400">
-              Single, double or king — our size guide covers bed dimensions, weights
-              and how much drape to expect.
+              {t.home.ctaBody}
             </p>
             <div className="mt-7 flex flex-wrap justify-center gap-3">
               <Link href="/faq" className={cn(buttonVariants({ size: "lg" }))}>
-                Read the size guide
+                {t.home.ctaPrimary}
               </Link>
               <Link
                 href="/contact"
                 className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
               >
-                Ask us on WhatsApp
+                {t.home.ctaSecondary}
               </Link>
             </div>
           </div>

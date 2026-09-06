@@ -1,10 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import type { Order } from "@/lib/types";
-import { SIZES, PRODUCTS } from "@/lib/data/products";
+import { PRODUCTS } from "@/lib/data/products";
+import { useT } from "@/components/i18n/language-provider";
 import { inr } from "@/lib/utils";
 
 export function OrderItems({ order }: { order: Order }) {
+  const t = useT();
   return (
     <ul className="divide-y divide-cream-400">
       {order.items.map((it, i) => {
@@ -22,7 +26,7 @@ export function OrderItems({ order }: { order: Order }) {
                 {it.gujaratiName}
               </p>
               <p className="mt-1 text-[0.78rem] text-clay-300">
-                {SIZES[it.size].label} · Qty {it.qty}
+                {t.sizes[it.size]} · {t.common.quantity} {it.qty}
               </p>
             </div>
             <p className="shrink-0 text-[0.92rem] font-semibold text-clay-600">
@@ -51,30 +55,31 @@ export function OrderItems({ order }: { order: Order }) {
 }
 
 export function OrderTotals({ order }: { order: Order }) {
+  const t = useT();
   return (
     <dl className="space-y-2.5 text-[0.88rem]">
       <div className="flex justify-between text-clay-400">
-        <dt>Subtotal</dt>
+        <dt>{t.cart.subtotal}</dt>
         <dd className="tabular-nums">{inr(order.subtotal)}</dd>
       </div>
       {order.discount > 0 && (
         <div className="flex justify-between text-leaf-400">
-          <dt>Discount{order.couponCode ? ` (${order.couponCode})` : ""}</dt>
+          <dt>{t.cart.discount}{order.couponCode ? ` (${order.couponCode})` : ""}</dt>
           <dd className="tabular-nums">−{inr(order.discount)}</dd>
         </div>
       )}
       <div className="flex justify-between text-clay-400">
-        <dt>Shipping</dt>
+        <dt>{t.cart.shipping}</dt>
         <dd className="tabular-nums">
           {order.shipping === 0 ? (
-            <span className="text-leaf-400">Free</span>
+            <span className="text-leaf-400">{t.common.free}</span>
           ) : (
             inr(order.shipping)
           )}
         </dd>
       </div>
       <div className="flex items-baseline justify-between border-t border-cream-400 pt-3 text-lg font-semibold text-clay-600">
-        <dt>Total</dt>
+        <dt>{t.cart.total}</dt>
         <dd className="tabular-nums">{inr(order.total)}</dd>
       </div>
     </dl>

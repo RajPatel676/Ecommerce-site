@@ -3,6 +3,7 @@
 import { Truck, Check } from "lucide-react";
 import { inr } from "@/lib/utils";
 import { FREE_SHIPPING_THRESHOLD } from "@/lib/data/orders";
+import { useT } from "@/components/i18n/language-provider";
 
 export function FreeShippingMeter({
   gap,
@@ -11,6 +12,7 @@ export function FreeShippingMeter({
   gap: number;
   subtotal: number;
 }) {
+  const t = useT();
   const pct = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
   const done = gap <= 0 && subtotal > 0;
 
@@ -22,21 +24,15 @@ export function FreeShippingMeter({
             <Check className="h-4 w-4 shrink-0 text-leaf-400" />
             <span>
               <strong className="font-semibold text-leaf-400">
-                Free delivery unlocked.
+                {t.cart.freeUnlocked}
               </strong>{" "}
-              Your godadi ships on us.
+              {t.cart.freeUnlockedSub}
             </span>
           </>
         ) : (
           <>
             <Truck className="h-4 w-4 shrink-0 text-terracotta-400" />
-            <span>
-              You are{" "}
-              <strong className="font-semibold text-terracotta-500">
-                {inr(gap)}
-              </strong>{" "}
-              away from free delivery.
-            </span>
+            <span>{t.cart.away(inr(gap))}</span>
           </>
         )}
       </p>
@@ -46,7 +42,7 @@ export function FreeShippingMeter({
         aria-valuenow={pct}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-label="Progress towards free delivery"
+        aria-label={t.cart.freeUnlocked}
       >
         <div
           className="h-full rounded-full bg-gradient-to-r from-terracotta-300 to-terracotta-500 transition-[width] duration-500"

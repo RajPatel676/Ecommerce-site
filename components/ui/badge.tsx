@@ -1,6 +1,9 @@
+"use client";
+
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+import { useT } from "@/components/i18n/language-provider";
 
 const badgeVariants = cva(
   "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.09em]",
@@ -26,19 +29,19 @@ export function Badge({ className, variant, ...props }: BadgeProps) {
   return <span className={cn(badgeVariants({ variant }), className)} {...props} />;
 }
 
-const PRODUCT_BADGE: Record<string, { label: string; variant: BadgeProps["variant"] }> = {
-  bestseller: { label: "Bestseller", variant: "terracotta" },
-  new: { label: "New", variant: "leaf" },
-  limited: { label: "Limited", variant: "mustard" },
-  handloom: { label: "Handloom", variant: "default" },
+const BADGE_VARIANT: Record<string, BadgeProps["variant"]> = {
+  bestseller: "terracotta",
+  new: "leaf",
+  limited: "mustard",
+  handloom: "default",
 };
 
 export function ProductBadge({ badge }: { badge?: string }) {
-  if (!badge || !PRODUCT_BADGE[badge]) return null;
-  const b = PRODUCT_BADGE[badge];
+  const t = useT();
+  if (!badge || !BADGE_VARIANT[badge]) return null;
   return (
-    <Badge variant={b.variant} className="backdrop-blur bg-opacity-90">
-      {b.label}
+    <Badge variant={BADGE_VARIANT[badge]} className="backdrop-blur bg-opacity-90">
+      {t.badges[badge as keyof typeof t.badges]}
     </Badge>
   );
 }

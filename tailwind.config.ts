@@ -15,7 +15,7 @@ const config: Config = {
     },
     extend: {
       colors: {
-        /* ---- Vasundhara textile palette -----------------------------------
+        /* ---- Hansaben textile palette -----------------------------------
            Values live in app/globals.css as CSS variables so a theme swap
            changes what every existing utility class means, with no markup
            churn. `<alpha-value>` keeps `/50` opacity modifiers working.
@@ -93,7 +93,8 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-display)", "Georgia", "serif"],
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
-        gujarati: ["var(--font-gujarati)", "var(--font-sans)", "sans-serif"],
+        gujarati: ["Gujarati Subset", "var(--font-sans)", "sans-serif"],
+        "gujarati-display": ["var(--font-gujarati-display)", "Gujarati Subset", "serif"],
       },
       borderRadius: {
         xl: "0.875rem",

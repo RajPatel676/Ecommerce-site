@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { ShoppingBag, Trash2, X } from "lucide-react";
 import { useStore } from "@/components/store/store-provider";
+import { useT } from "@/components/i18n/language-provider";
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { EmptyState, QuantityStepper } from "@/components/ui/misc";
@@ -25,6 +26,7 @@ export function CartDrawer() {
     freeShippingGap,
     cartCount,
   } = useStore();
+  const t = useT();
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setCartOpen(false);
     window.addEventListener("keydown", onKey);
@@ -38,7 +40,7 @@ export function CartDrawer() {
       className="fixed inset-0 z-[80]"
       role="dialog"
       aria-modal="true"
-      aria-label="Shopping cart"
+      aria-label={t.cart.title}
     >
       <div
         className="absolute inset-0 animate-fade-in bg-inverse/40 backdrop-blur-[2px]"
@@ -55,15 +57,15 @@ export function CartDrawer() {
       >
         <header className="flex items-center justify-between border-b border-cream-400 px-5 py-4">
           <div>
-            <h2 className="font-display text-xl text-clay-600">Your Cart</h2>
+            <h2 className="font-display text-xl text-clay-600">{t.cart.title}</h2>
             <p className="text-[0.75rem] text-clay-300">
-              {cartCount} {cartCount === 1 ? "item" : "items"}
+              {t.cart.items(cartCount)}
             </p>
           </div>
           <button
             type="button"
             onClick={() => setCartOpen(false)}
-            aria-label="Close cart"
+            aria-label={t.common.close}
             className="grid h-10 w-10 place-items-center rounded-full text-clay-400 transition-colors hover:bg-cream-300"
           >
             <X className="h-5 w-5" />
@@ -74,10 +76,10 @@ export function CartDrawer() {
           <div className="flex flex-1 flex-col justify-center">
             <EmptyState
               icon={ShoppingBag}
-              title="Your cart is waiting for a little warmth."
-              gujarati="તમારી ગાડી હજી ખાલી છે."
-              description="Nothing here yet. Our godadis are handmade in small batches — have a look."
-              actionLabel="Explore Godadi"
+              title={t.cart.emptyTitle}
+              gujarati={t.cart.emptyGu}
+              description={t.cart.emptyDesc}
+              actionLabel={t.common.exploreGodadi}
               actionHref="/shop"
               onAction={() => setCartOpen(false)}
             />
@@ -114,7 +116,7 @@ export function CartDrawer() {
                         <button
                           type="button"
                           onClick={() => removeLine(l.key)}
-                          aria-label={`Remove ${l.product.name} from cart`}
+                          aria-label={`${t.common.remove} ${l.product.name}`}
                           className="shrink-0 rounded-full p-1.5 text-clay-200 transition-colors hover:bg-rose-50 hover:text-rose-300"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -142,23 +144,23 @@ export function CartDrawer() {
             <footer className="border-t border-cream-400 bg-cream-200 px-5 py-4">
               <dl className="space-y-1.5 text-[0.85rem]">
                 <div className="flex justify-between text-clay-400">
-                  <dt>Subtotal</dt>
+                  <dt>{t.cart.subtotal}</dt>
                   <dd className="tabular-nums">{inr(subtotal)}</dd>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-leaf-400">
-                    <dt>Discount</dt>
+                    <dt>{t.cart.discount}</dt>
                     <dd className="tabular-nums">−{inr(discount)}</dd>
                   </div>
                 )}
                 <div className="flex justify-between text-clay-400">
-                  <dt>Shipping</dt>
+                  <dt>{t.cart.shipping}</dt>
                   <dd className="tabular-nums">
-                    {shipping === 0 ? "Free" : inr(shipping)}
+                    {shipping === 0 ? t.common.free : inr(shipping)}
                   </dd>
                 </div>
                 <div className="flex justify-between border-t border-cream-500 pt-2.5 text-base font-semibold text-clay-600">
-                  <dt>Total</dt>
+                  <dt>{t.cart.total}</dt>
                   <dd className="tabular-nums">{inr(total)}</dd>
                 </div>
               </dl>
@@ -167,7 +169,7 @@ export function CartDrawer() {
                 href="/checkout"
                 className={cn(buttonVariants({ size: "lg", full: true }), "mt-4")}
               >
-                Proceed to Checkout
+                {t.cart.checkout}
               </Link>
               <Button
                 variant="ghost"
@@ -176,7 +178,7 @@ export function CartDrawer() {
                 className="mt-1.5"
                 onClick={() => setCartOpen(false)}
               >
-                Continue shopping
+                {t.common.continueShopping}
               </Button>
             </footer>
           </>

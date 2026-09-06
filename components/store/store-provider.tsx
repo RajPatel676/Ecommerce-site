@@ -32,6 +32,7 @@ import {
 } from "@/lib/data/orders";
 import { findCoupon } from "@/lib/data/customers";
 import { STEP_NOTE } from "@/lib/status";
+import { useT } from "@/components/i18n/language-provider";
 
 /* ------------------------------------------------------------------ types */
 
@@ -171,6 +172,7 @@ export const DEMO_CUSTOMER_ID = "CUS-1002";
 /* ---------------------------------------------------------------- provider */
 
 export function StoreProvider({ children }: { children: React.ReactNode }) {
+  const tr = useT();
   const [hydrated, setHydrated] = useState(false);
   const [cart, setCart] = useState<CartLine[]>([]);
   const [wishlist, setWishlist] = useState<string[]>([]);
@@ -274,16 +276,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       // covers the line the shopper wants to see.
       if (!opts?.silent && !willOpenDrawer) {
         toast({
-          title: "Added to cart",
+          title: tr.toast.addedToCart,
           description: `${p.name} · ${SIZES[size].label}`,
           tone: "success",
           href: "/cart",
-          hrefLabel: "View cart",
+          hrefLabel: tr.toast.viewCart,
         });
       }
       if (willOpenDrawer) setCartOpen(true);
     },
-    [toast],
+    [toast, tr],
   );
 
   const setQty = useCallback((key: string, qty: number) => {
@@ -297,7 +299,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const removeLine = useCallback(
     (key: string) => {
       setCart((cur) => cur.filter((l) => l.key !== key));
-      toast({ title: "Removed from cart" });
+      toast({ title: tr.toast.removedFromCart });
     },
     [toast],
   );
@@ -370,29 +372,31 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const c = findCoupon(code);
       if (!c) {
         toast({
-          title: "That code did not work",
-          description: "Check the spelling and try again.",
+          title: tr.toast.couponFailed,
+          description: tr.toast.couponFailedDesc,
           tone: "error",
         });
         return false;
       }
       if (subtotal < c.minOrder) {
         toast({
-          title: `${c.code} needs a minimum order`,
-          description: `Add ₹${(c.minOrder - subtotal).toLocaleString("en-IN")} more to use this code.`,
+          title: tr.toast.couponMin(c.code),
+          description: tr.toast.couponMinDesc(
+            `₹${(c.minOrder - subtotal).toLocaleString("en-IN")}`,
+          ),
           tone: "error",
         });
         return false;
       }
       setCouponCode(c.code);
       toast({
-        title: `${c.code} applied`,
+        title: tr.toast.couponApplied(c.code),
         description: c.description,
         tone: "success",
       });
       return true;
     },
-    [subtotal, toast],
+    [subtotal, toast, tr],
   );
 
   const removeCoupon = useCallback(() => setCouponCode(null), []);
@@ -409,19 +413,19 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
           : [...cur, id];
         toast(
           cur.includes(id)
-            ? { title: "Removed from wishlist" }
+            ? { title: tr.toast.removedFromWishlist }
             : {
-                title: "Saved to wishlist",
+                title: tr.toast.savedToWishlist,
                 description: product?.name,
                 tone: "success",
                 href: "/wishlist",
-                hrefLabel: "View wishlist",
+                hrefLabel: tr.toast.viewWishlist,
               },
         );
         return next;
       });
     },
-    [toast],
+    [toast, tr],
   );
 
   /* -- orders ------------------------------------------------------------ */
@@ -523,12 +527,12 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         }),
       );
       toast({
-        title: "Order status updated",
-        description: `${id} → ${status.replace(/_/g, " ")}`,
+        title: tr.toast.statusUpdated,
+        description: `${id} → ${tr.status[status]}`,
         tone: "success",
       });
     },
-    [toast],
+    [toast, tr],
   );
 
   const myOrders = useMemo(

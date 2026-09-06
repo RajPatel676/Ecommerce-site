@@ -15,22 +15,33 @@ import {
 } from "lucide-react";
 import type { Product, SizeKey } from "@/lib/types";
 import { SIZES, mrpForSize, priceForSize } from "@/lib/data/products";
+import { useT } from "@/components/i18n/language-provider";
+import {
+  productCare,
+  productDescription,
+  productMaterial,
+  productName,
+  productPlace,
+  productStory,
+  productSubName,
+  productWeight,
+} from "@/lib/i18n/content";
 import { useStore } from "@/components/store/store-provider";
 import { Button } from "@/components/ui/button";
 import { Accordion } from "@/components/ui/accordion";
 import { Price, QuantityStepper, Rating } from "@/components/ui/misc";
 import { cn, inr } from "@/lib/utils";
 
-const ASSURANCES = [
-  { icon: Truck, label: "Free delivery over ₹1,499" },
-  { icon: BadgeIndianRupee, label: "Cash on Delivery available" },
-  { icon: RotateCcw, label: "7-day easy returns" },
-  { icon: ShieldCheck, label: "Secure payment" },
-];
-
 export function ProductDetail({ product }: { product: Product }) {
   const { addToCart, isWished, toggleWish, hydrated, setCartOpen } = useStore();
   const router = useRouter();
+  const t = useT();
+  const ASSURANCES = [
+    { icon: Truck, label: t.product.assurance.delivery },
+    { icon: BadgeIndianRupee, label: t.product.assurance.cod },
+    { icon: RotateCcw, label: t.product.assurance.returns },
+    { icon: ShieldCheck, label: t.product.assurance.secure },
+  ];
 
   const [size, setSize] = useState<SizeKey>(
     product.sizes.includes("double") ? "double" : product.sizes[0],
@@ -55,9 +66,9 @@ export function ProductDetail({ product }: { product: Product }) {
     <div className="container py-6 lg:py-10">
       {/* breadcrumb */}
       <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-1.5 text-[0.78rem] text-clay-300">
-        <Link href="/" className="hover:text-terracotta-500">Home</Link>
+        <Link href="/" className="hover:text-terracotta-500">{t.nav.home}</Link>
         <ChevronRight className="h-3 w-3" />
-        <Link href="/shop" className="hover:text-terracotta-500">Shop</Link>
+        <Link href="/shop" className="hover:text-terracotta-500">{t.nav.shop}</Link>
         <ChevronRight className="h-3 w-3" />
         <Link
           href={`/shop?category=${product.category}`}
@@ -66,7 +77,7 @@ export function ProductDetail({ product }: { product: Product }) {
           {product.category[0].toUpperCase() + product.category.slice(1)}
         </Link>
         <ChevronRight className="h-3 w-3" />
-        <span className="text-clay-400">{product.name}</span>
+        <span className="text-clay-400">{productName(product, t)}</span>
       </nav>
 
       <div className="grid gap-8 lg:grid-cols-2 lg:gap-14">
@@ -106,45 +117,45 @@ export function ProductDetail({ product }: { product: Product }) {
 
         {/* ---------------------------------------------------------- info */}
         <div>
-          <p className="kicker">{product.craftedIn}</p>
+          <p className="kicker">{productPlace(product, t)}</p>
           <h1 className="mt-2.5 text-[1.85rem] leading-tight text-clay-600 sm:text-[2.3rem]">
-            {product.name}
+            {productName(product, t)}
           </h1>
-          <p className="mt-1.5 font-gujarati text-[1.05rem] text-terracotta-400">
-            {product.gujaratiName}
+          <p className="mt-1.5 text-[1.05rem] text-terracotta-400">
+            {productSubName(product, t)}
           </p>
 
           <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
             <Rating value={product.rating} count={product.reviewCount} size="md" />
             <span className="text-[0.8rem] text-clay-300">
               {product.stock > 12
-                ? "In stock"
-                : `Only ${product.stock} left in this run`}
+                ? t.common.inStock
+                : t.common.onlyLeftRun(product.stock)}
             </span>
           </div>
 
           <div className="mt-5">
             <Price price={price} mrp={mrp} size="lg" />
             <p className="mt-1 text-[0.78rem] text-clay-300">
-              Inclusive of all taxes
+              {t.product.inclusiveTax}
             </p>
           </div>
 
           <p className="mt-5 text-[0.95rem] leading-relaxed text-clay-400">
-            {product.description}
+            {productDescription(product, t)}
           </p>
 
           {/* size */}
           <div className="mt-8">
             <div className="mb-3 flex items-baseline justify-between">
               <h2 className="text-[0.82rem] font-semibold uppercase tracking-[0.12em] text-clay-500">
-                Size
+                {t.common.size}
               </h2>
               <Link
                 href="/faq"
                 className="text-[0.78rem] text-terracotta-500 hover:underline"
               >
-                Size guide
+                {t.common.sizeGuide}
               </Link>
             </div>
             <div className="flex flex-wrap gap-2.5">
@@ -162,7 +173,7 @@ export function ProductDetail({ product }: { product: Product }) {
                   )}
                 >
                   <span className="block text-[0.88rem] font-medium text-clay-600">
-                    {SIZES[s].label}
+                    {t.sizes[s]}
                   </span>
                   <span className="block text-[0.72rem] text-clay-300">
                     {SIZES[s].dimensions}
@@ -175,7 +186,7 @@ export function ProductDetail({ product }: { product: Product }) {
           {/* variant */}
           <div className="mt-7">
             <h2 className="mb-3 text-[0.82rem] font-semibold uppercase tracking-[0.12em] text-clay-500">
-              Pattern ·{" "}
+              {t.common.pattern} ·{" "}
               <span className="font-normal normal-case tracking-normal text-clay-400">
                 {activeVariant.label}
               </span>
@@ -224,10 +235,10 @@ export function ProductDetail({ product }: { product: Product }) {
               }}
             >
               <ShoppingBag className="h-[1.1rem] w-[1.1rem]" />
-              Add to Cart
+              {t.common.addToCart}
             </Button>
             <Button size="lg" variant="secondary" className="flex-1" onClick={buyNow}>
-              Buy Now
+              {t.common.buyNow}
             </Button>
             <Button
               size="lg"
@@ -244,7 +255,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 )}
               />
               <span className="sm:hidden">
-                {wished ? "Saved" : "Save for later"}
+                {wished ? t.common.saved : t.common.saveForLater}
               </span>
             </Button>
           </div>
@@ -269,27 +280,27 @@ export function ProductDetail({ product }: { product: Product }) {
             items={[
               {
                 id: "details",
-                title: "Product Details",
+                title: t.product.details,
                 content: (
                   <div className="space-y-3">
-                    <p>{product.story}</p>
+                    <p>{productStory(product, t)}</p>
                     <dl className="grid grid-cols-2 gap-x-6 gap-y-2 pt-2 text-[0.85rem]">
                       <div>
-                        <dt className="text-clay-300">Weight</dt>
-                        <dd className="font-medium text-clay-500">{product.weight}</dd>
+                        <dt className="text-clay-300">{t.product.weight}</dt>
+                        <dd className="font-medium text-clay-500">{productWeight(product, t)}</dd>
                       </div>
                       <div>
-                        <dt className="text-clay-300">Crafted in</dt>
-                        <dd className="font-medium text-clay-500">{product.craftedIn}</dd>
+                        <dt className="text-clay-300">{t.product.craftedIn}</dt>
+                        <dd className="font-medium text-clay-500">{productPlace(product, t)}</dd>
                       </div>
                       <div>
-                        <dt className="text-clay-300">Dimensions</dt>
+                        <dt className="text-clay-300">{t.product.dimensions}</dt>
                         <dd className="font-medium text-clay-500">
                           {SIZES[size].dimensions}
                         </dd>
                       </div>
                       <div>
-                        <dt className="text-clay-300">SKU</dt>
+                        <dt className="text-clay-300">{t.product.sku}</dt>
                         <dd className="font-medium text-clay-500">
                           {product.id}-{size.toUpperCase()}
                         </dd>
@@ -300,15 +311,17 @@ export function ProductDetail({ product }: { product: Product }) {
               },
               {
                 id: "material",
-                title: "Material & Care",
+                title: t.product.material,
                 content: (
                   <div className="space-y-3">
                     <p>
-                      <span className="font-medium text-clay-500">Material:</span>{" "}
-                      {product.material}
+                      <span className="font-medium text-clay-500">
+                        {t.product.materialLabel}
+                      </span>{" "}
+                      {productMaterial(product, t)}
                     </p>
                     <ul className="list-disc space-y-1.5 pl-5 marker:text-terracotta-300">
-                      {product.care.map((c) => (
+                      {productCare(product, t).map((c) => (
                         <li key={c}>{c}</li>
                       ))}
                     </ul>
@@ -317,34 +330,23 @@ export function ProductDetail({ product }: { product: Product }) {
               },
               {
                 id: "shipping",
-                title: "Shipping Information",
+                title: t.product.shipping,
                 content: (
                   <ul className="space-y-2">
-                    <li>Standard delivery: 4–6 working days across India. Free above ₹1,499.</li>
-                    <li>Express delivery: 2–3 working days for ₹199.</li>
-                    <li>Dispatched from Vadodara within 24 hours of confirmation.</li>
-                    <li>Cash on Delivery available on all pincodes we serve.</li>
+                    {t.product.shippingInfo.map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
                   </ul>
                 ),
               },
               {
                 id: "returns",
-                title: "Returns",
+                title: t.product.returns,
                 content: (
                   <ul className="space-y-2">
-                    <li>
-                      Seven days from delivery, unwashed and unused, in the muslin wrap
-                      it arrived in.
-                    </li>
-                    <li>Free reverse pickup in serviceable pincodes.</li>
-                    <li>
-                      Refunds are issued to the original payment method within 5–7
-                      working days.
-                    </li>
-                    <li>
-                      Slight variation in colour and stitch is the nature of handmade
-                      work, and is not a defect.
-                    </li>
+                    {t.product.returnsInfo.map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
                   </ul>
                 ),
               },

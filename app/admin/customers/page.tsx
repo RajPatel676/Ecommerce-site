@@ -7,8 +7,10 @@ import { Input } from "@/components/ui/field";
 import { EmptyState } from "@/components/ui/misc";
 import { CUSTOMERS } from "@/lib/data/customers";
 import { formatDate, inr } from "@/lib/utils";
+import { useT } from "@/components/i18n/language-provider";
 
 export default function AdminCustomersPage() {
+  const t = useT();
   const [q, setQ] = useState("");
 
   const rows = useMemo(() => {
@@ -25,7 +27,7 @@ export default function AdminCustomersPage() {
   return (
     <>
       <AdminHeading
-        title="Customers"
+        title={t.admin.customers}
         description={`${CUSTOMERS.length} customers · ${inr(totalSpent)} lifetime value`}
         action={
           <div className="relative w-full sm:w-64">
@@ -33,8 +35,8 @@ export default function AdminCustomersPage() {
             <Input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search customers…"
-              aria-label="Search customers"
+              placeholder={t.admin.searchCustomers}
+              aria-label={t.admin.searchCustomers}
               className="h-11 pl-10"
             />
           </div>
@@ -53,10 +55,10 @@ export default function AdminCustomersPage() {
             <table className="w-full min-w-[48rem] text-left text-[0.85rem]">
               <thead className="border-b border-cream-400 bg-cream-200 text-[0.72rem] uppercase tracking-[0.1em] text-clay-300">
                 <tr>
-                  <Th>Customer</Th>
+                  <Th>{t.admin.customer}</Th>
                   <Th>Contact</Th>
                   <Th>Location</Th>
-                  <Th>Orders</Th>
+                  <Th>{t.admin.orders}</Th>
                   <Th>Lifetime value</Th>
                   <Th>Joined</Th>
                 </tr>

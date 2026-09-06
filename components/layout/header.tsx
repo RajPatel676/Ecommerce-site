@@ -7,19 +7,25 @@ import { Heart, Menu, Search, ShoppingBag, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/layout/logo";
 import { useStore } from "@/components/store/store-provider";
+import { useT } from "@/components/i18n/language-provider";
+import { LanguagePicker } from "@/components/i18n/language-picker";
 import { ThemePicker } from "@/components/theme/theme-picker";
 
-export const NAV = [
-  { href: "/", label: "Home" },
-  { href: "/shop", label: "Shop" },
-  { href: "/about", label: "Our Story" },
-  { href: "/contact", label: "Contact" },
+import type { Dict } from "@/lib/i18n";
+
+export const navItems = (t: Dict) => [
+  { href: "/", label: t.nav.home },
+  { href: "/shop", label: t.nav.shop },
+  { href: "/about", label: t.nav.story },
+  { href: "/contact", label: t.nav.contact },
 ];
 
 export function Header() {
   const pathname = usePathname();
   const { cartCount, setCartOpen, setSearchOpen, setMenuOpen, hydrated, wishlist } =
     useStore();
+  const t = useT();
+  const NAV = navItems(t);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -50,10 +56,10 @@ export function Header() {
       <div className="relative z-40 bg-inverse text-on-inverse">
         <div className="container flex h-9 items-center justify-center gap-2 text-center text-[0.72rem] tracking-wide sm:text-[0.78rem]">
           <span className="h-1 w-1 rounded-full bg-mustard-300" aria-hidden />
-          <span>Free delivery on orders above ₹1,499</span>
+          <span>{t.nav.announcement}</span>
           <span className="hidden text-on-inverse/50 sm:inline">·</span>
           <span className="hidden text-on-inverse/70 sm:inline">
-            Handmade in Gujarat
+            {t.nav.announcementSub}
           </span>
         </div>
       </div>
@@ -71,7 +77,7 @@ export function Header() {
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
-            aria-label="Open menu"
+            aria-label={t.nav.openMenu}
             className="-ml-2 grid h-10 w-10 place-items-center rounded-full text-clay-500 transition-colors hover:bg-cream-300 lg:hidden"
           >
             <Menu className="h-5 w-5" />
@@ -114,17 +120,18 @@ export function Header() {
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              aria-label="Open search"
+              aria-label={t.nav.openSearch}
               className="grid h-10 w-10 place-items-center rounded-full text-clay-500 transition-colors hover:bg-cream-300 hover:text-terracotta-500"
             >
               <Search className="h-[1.15rem] w-[1.15rem]" />
             </button>
 
+            <LanguagePicker />
             <ThemePicker />
 
             <Link
               href="/wishlist"
-              aria-label="Wishlist"
+              aria-label={t.nav.wishlist}
               className="relative hidden h-10 w-10 place-items-center rounded-full text-clay-500 transition-colors hover:bg-cream-300 hover:text-terracotta-500 sm:grid"
             >
               <Heart className="h-[1.15rem] w-[1.15rem]" />
@@ -135,7 +142,7 @@ export function Header() {
 
             <Link
               href="/account"
-              aria-label="Your account"
+              aria-label={t.nav.account}
               className="hidden h-10 w-10 place-items-center rounded-full text-clay-500 transition-colors hover:bg-cream-300 hover:text-terracotta-500 sm:grid"
             >
               <User className="h-[1.15rem] w-[1.15rem]" />
@@ -144,7 +151,7 @@ export function Header() {
             <button
               type="button"
               onClick={() => setCartOpen(true)}
-              aria-label={`Cart, ${hydrated ? cartCount : 0} items`}
+              aria-label={`${t.nav.cartLabel}, ${hydrated ? cartCount : 0}`}
               className="relative grid h-10 w-10 place-items-center rounded-full text-clay-500 transition-colors hover:bg-cream-300 hover:text-terracotta-500"
             >
               <ShoppingBag className="h-[1.15rem] w-[1.15rem]" />

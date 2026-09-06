@@ -24,7 +24,7 @@ export function Logo({
     <Link
       href="/"
       onClick={onClick}
-      aria-label="Vasundhara Godadi — home"
+      aria-label="Hansaben Godadi — home"
       className={cn("group inline-flex flex-col leading-none", className)}
     >
       <span
@@ -33,10 +33,10 @@ export function Logo({
           s[0],
         )}
       >
-        વસુંધરા ગોદડી
+        હંસાબેન ગોદડી
       </span>
       <span className={cn("mt-1 font-semibold uppercase text-terracotta-400", s[1])}>
-        Vasundhara
+        Hansaben
       </span>
     </Link>
   );

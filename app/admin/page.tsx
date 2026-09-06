@@ -14,7 +14,7 @@ import { AdminHeading, Panel, Td, Th } from "@/components/admin/admin-shell";
 import { PaymentBadge, StatusBadge } from "@/components/ui/misc";
 import { useStore } from "@/components/store/store-provider";
 import { CUSTOMERS } from "@/lib/data/customers";
-import { STATUS_LABEL } from "@/lib/status";
+import { useT } from "@/components/i18n/language-provider";
 import { cn, formatDate, inr, seeded } from "@/lib/utils";
 
 /** Deterministic 7-day sales series so server and client agree. */
@@ -30,6 +30,7 @@ const SALES_7D = (() => {
 
 export default function AdminDashboard() {
   const { orders, hydrated } = useStore();
+  const t = useT();
 
   const stats = useMemo(() => {
     const live = orders.filter((o) => o.status !== "cancelled");
@@ -49,7 +50,7 @@ export default function AdminDashboard() {
     const keys = ["pending_payment", "confirmed", "packed", "shipped", "delivered"] as const;
     return keys.map((k) => ({
       key: k,
-      label: STATUS_LABEL[k],
+      label: t.status[k],
       count: orders.filter((o) =>
         k === "confirmed"
           ? ["payment_confirmed", "confirmed"].includes(o.status)
@@ -58,7 +59,7 @@ export default function AdminDashboard() {
             : o.status === k,
       ).length,
     }));
-  }, [orders]);
+  }, [orders, t]);
 
   const maxSales = Math.max(...SALES_7D.map((d) => d.value));
   const weekTotal = SALES_7D.reduce((s, d) => s + d.value, 0);
@@ -67,38 +68,38 @@ export default function AdminDashboard() {
   return (
     <>
       <AdminHeading
-        title="Dashboard"
-        description="Everything happening in the shop today, at a glance."
+        title={t.admin.dashboard}
+        description={t.admin.dashboardDesc}
       />
 
       {/* ---------------------------------------------------------- stats */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Stat
           icon={ShoppingCart}
-          label="Total Orders"
+          label={t.admin.totalOrders}
           value={hydrated ? String(stats.orders) : "—"}
           delta="+12.4%"
           tone="leaf"
         />
         <Stat
           icon={IndianRupee}
-          label="Revenue"
+          label={t.admin.revenue}
           value={hydrated ? inr(stats.revenue) : "—"}
           delta="+8.1%"
           tone="terracotta"
         />
         <Stat
           icon={Users}
-          label="Customers"
+          label={t.admin.customers}
           value={hydrated ? String(stats.customers) : "—"}
           delta="+5.7%"
           tone="mustard"
         />
         <Stat
           icon={Package}
-          label="Pending Orders"
+          label={t.admin.pendingOrders}
           value={hydrated ? String(stats.pending) : "—"}
-          delta="Needs action"
+          delta={t.admin.needsAction}
           tone="clay"
         />
       </div>
@@ -106,10 +107,10 @@ export default function AdminDashboard() {
       <div className="mt-5 grid gap-5 xl:grid-cols-[1.6fr_1fr]">
         {/* ------------------------------------------------------- chart */}
         <Panel
-          title="Sales Overview"
+          title={t.admin.salesOverview}
           action={
             <span className="text-[0.78rem] text-clay-300">
-              Last 7 days ·{" "}
+              {t.admin.last7} ·{" "}
               <span className="font-semibold text-clay-500">{inr(weekTotal)}</span>
             </span>
           }
@@ -138,12 +139,12 @@ export default function AdminDashboard() {
           </div>
           <p className="mt-4 flex items-center gap-1.5 border-t border-cream-400 pt-3.5 text-[0.78rem] text-clay-300">
             <TrendingUp className="h-3.5 w-3.5 text-leaf-400" />
-            Saturday remains the strongest day — festival gifting.
+
           </p>
         </Panel>
 
         {/* ------------------------------------------ order status overview */}
-        <Panel title="Order Status Overview" bodyClassName="p-5">
+        <Panel title={t.admin.statusOverview} bodyClassName="p-5">
           <ul className="space-y-4">
             {statusCounts.map((s) => {
               const total = Math.max(1, orders.length);
@@ -180,7 +181,7 @@ export default function AdminDashboard() {
             href="/admin/orders"
             className="mt-6 flex items-center justify-between rounded-xl bg-cream-200 px-4 py-3 text-[0.82rem] font-medium text-clay-500 transition-colors hover:bg-cream-300"
           >
-            Manage all orders
+            {t.admin.manageOrders}
             <ArrowRight className="h-4 w-4" />
           </Link>
         </Panel>
@@ -189,13 +190,13 @@ export default function AdminDashboard() {
       {/* -------------------------------------------------- recent orders */}
       <Panel
         className="mt-5"
-        title="Recent Orders"
+        title={t.admin.recentOrders}
         action={
           <Link
             href="/admin/orders"
             className="text-[0.8rem] font-medium text-terracotta-500 hover:underline"
           >
-            View all
+            {t.admin.viewAll}
           </Link>
         }
       >
@@ -203,13 +204,13 @@ export default function AdminDashboard() {
           <table className="w-full min-w-[54rem] text-left text-[0.85rem]">
             <thead className="border-b border-cream-400 bg-cream-200 text-[0.72rem] uppercase tracking-[0.1em] text-clay-300">
               <tr>
-                <Th>Order ID</Th>
-                <Th>Customer</Th>
-                <Th>Product</Th>
-                <Th>Amount</Th>
-                <Th>Payment</Th>
-                <Th>Status</Th>
-                <Th>Date</Th>
+                <Th>{t.admin.orderId}</Th>
+                <Th>{t.admin.customer}</Th>
+                <Th>{t.admin.product}</Th>
+                <Th>{t.admin.amount}</Th>
+                <Th>{t.admin.paymentCol}</Th>
+                <Th>{t.admin.statusCol}</Th>
+                <Th>{t.admin.dateCol}</Th>
               </tr>
             </thead>
             <tbody className="divide-y divide-cream-400">

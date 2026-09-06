@@ -6,9 +6,11 @@ import { AdminHeading, Panel } from "@/components/admin/admin-shell";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Select, Textarea } from "@/components/ui/field";
 import { useStore } from "@/components/store/store-provider";
+import { useT } from "@/components/i18n/language-provider";
 
 export default function AdminSettingsPage() {
   const { toast } = useStore();
+  const t = useT();
   const [saving, setSaving] = useState(false);
 
   const save = async (e: React.FormEvent) => {
@@ -34,23 +36,23 @@ export default function AdminSettingsPage() {
   return (
     <>
       <AdminHeading
-        title="Settings"
+        title={t.admin.settings}
         description="Store details, delivery rules and prototype controls."
       />
 
       <form onSubmit={save} className="grid gap-5 xl:grid-cols-2">
         <Panel title="Store details" bodyClassName="grid gap-4 p-5 sm:grid-cols-2">
           <Field label="Store name" htmlFor="s-name" className="sm:col-span-2">
-            <Input id="s-name" defaultValue="Vasundhara Godadi" />
+            <Input id="s-name" defaultValue="Hansaben Godadi" />
           </Field>
           <Field label="Gujarati name" htmlFor="s-guj" className="sm:col-span-2">
-            <Input id="s-guj" defaultValue="વસુંધરા ગોદડી" className="font-gujarati" />
+            <Input id="s-guj" defaultValue="હંસાબેન ગોદડી" className="font-gujarati" />
           </Field>
           <Field label="Tagline" htmlFor="s-tag" className="sm:col-span-2">
             <Input id="s-tag" defaultValue="ઘરની હૂંફ, હાથની મહેનત." className="font-gujarati" />
           </Field>
           <Field label="Support email" htmlFor="s-email">
-            <Input id="s-email" type="email" defaultValue="hello@vasundharagodadi.in" />
+            <Input id="s-email" type="email" defaultValue="hello@hansabengodadi.in" />
           </Field>
           <Field label="Support phone" htmlFor="s-phone">
             <Input id="s-phone" defaultValue="+91 265 246 8890" />

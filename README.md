@@ -1,4 +1,4 @@
-# વસુંધરા ગોદડી · Vasundhara Godadi
+# હંસાબેન ગોદડી · Hansaben Godadi
 
 **ઘરની હૂંફ, હાથની મહેનત.** — Handcrafted warmth, made with tradition.
 
@@ -39,14 +39,30 @@ npm run preview     # build + start, in one command
 
 Measured in a browser against that build:
 
-| Page | Load | First paint | JS |
+| Page | Load | First paint |
+| --- | --- | --- |
+| Home | 345 ms | 392 ms |
+| Shop | 207 ms | 192 ms |
+| Product | 360 ms | 280 ms |
+| Admin | 215 ms | 228 ms |
+
+And on a simulated mid-range phone (4G, 4× CPU throttle), against the
+production build:
+
+| | TTFB | First paint | Load |
 | --- | --- | --- | --- |
-| Home | 345 ms | 392 ms | 125 kB |
-| Shop | 207 ms | 192 ms | 129 kB |
-| Product | 360 ms | 280 ms | 129 kB |
-| Admin | 215 ms | 228 ms | 126 kB |
+| English | 33 ms | 992 ms | 1.58 s |
+| ગુજરાતી | 27 ms | 888 ms | 1.34 s |
+
+The same page under `npm run dev` loads in 2.7–3.4 s, so judge speed against
+`npm run preview`, not the dev server.
 
 What keeps it there:
+
+- **Fonts scoped per language.** Fraunces is only attached when the page is in
+  English, Noto Serif Gujarati only when it is in Gujarati, and the Gujarati
+  text face is self-hosted and subset to the 53 codepoints the app uses. Font
+  payload dropped from 457 kB to 238 kB (English) and 167 kB (Gujarati).
 
 - **Turbopack for dev** (`npm run dev`). Cut dev payload from 10.9 MB to
   4.6 MB per page and home TTFB from 9.8 s to ~140 ms.
@@ -140,12 +156,66 @@ lib/
 
 ---
 
+## Language — ગુજરાતી / English
+
+A language switch sits beside the theme picker, in both the store header and
+the admin bar. It flips the **entire** site: navigation, buttons, forms,
+validation messages, order statuses, product names, product descriptions,
+care instructions, the About and FAQ prose, and the admin panel.
+
+### How it works
+
+The choice is stored in a `vg.lang` cookie and read **on the server** in the
+root layout, so the first HTML that arrives is already in the right language:
+
+```bash
+curl -H "Cookie: vg.lang=gu" localhost:3000 | grep 'lang='
+# lang="gu"
+```
+
+That matters. A `localStorage`-only approach would render English, hydrate,
+then swap to Gujarati — a visible flash on every page load, plus a React
+hydration mismatch, because the server and client HTML would disagree. Reading
+a cookie avoids both. Switching after that is instant client-side state; the
+cookie is only written so the *next* visit starts correct.
+
+The trade-off is honest and measurable: reading a cookie opts every route out
+of static generation. TTFB went from ~15–25 ms to ~25–45 ms, and First Load JS
+from ~125 kB to ~153 kB (both dictionaries ship so switching needs no fetch).
+Pages still paint in 224–412 ms. Correct-first-paint was worth ~30 ms.
+
+### Structure
+
+| File | Holds |
+| --- | --- |
+| `lib/i18n/en.ts` | Every English UI string. `Dict` is inferred from it. |
+| `lib/i18n/gu.ts` | Gujarati, typed `Dict` — a missing key fails the build |
+| `lib/data/products.gu.ts` | Gujarati catalogue copy, keyed by product id |
+| `lib/i18n/content.ts` | Resolves product/category content for the active language |
+| `components/i18n/` | Provider, `useT()` hook, and the picker |
+
+Catalogue content is kept apart from UI strings because it is data, not
+interface: `productName(p, t)`, `productDescription(p, t)` and friends resolve
+it, and each product card shows the other-language name underneath as a
+subtitle.
+
+### Typography
+
+Fraunces and Inter carry no Gujarati glyphs, so `html[lang="gu"]` switches the
+body to **Noto Sans Gujarati** and headings to **Noto Serif Gujarati**, with a
+taller line height — Gujarati matras sit above and below the baseline and
+crowd at Latin leading. Prices, order IDs and SKUs stay in the Latin face so
+₹1,499 and GD20260906001 remain legible.
+
+---
+
 ## Theming
 
 A picker sits in the store header and the admin bar. It sets two things
 independently, both saved to `localStorage` (`vg.theme.v1`):
 
-- **Appearance** — Light, Dark, or System (follows the OS and reacts live).
+- **Appearance** — Light (the default), Dark, or System. System follows the OS
+  and reacts live; a saved choice always wins over the OS setting.
 - **Colour theme** — five complete palettes lifted from the artwork:
   Terracotta (કચ્છી લાલ), Indigo (ગળી), Morpankh (મોરપંખ), Banni (બન્ની), Vann (વન).
 
@@ -266,5 +336,5 @@ is small. Upgrading to Next 15 is the clean fix when you want it.
   three functions a real backend would take over.
 - Order IDs are minted as `GD<YYYYMMDD><seq>`; tracking numbers as `MG<9 digits>`.
 
-Built as a design prototype. Vasundhara Godadi is a fictional brand, and all
+Built as a design prototype. Hansaben Godadi is a fictional brand, and all
 customers, orders, reviews and payment states in this project are invented.

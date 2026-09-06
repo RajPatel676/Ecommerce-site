@@ -17,7 +17,7 @@ import { OrderTimeline } from "@/components/order/order-timeline";
 import { EmptyState, PaymentBadge, StatusBadge } from "@/components/ui/misc";
 import { Select } from "@/components/ui/field";
 import { useStore } from "@/components/store/store-provider";
-import { PAYMENT_METHOD_LABEL, STATUS_LABEL } from "@/lib/status";
+import { useT } from "@/components/i18n/language-provider";
 import { TRACKING_FLOW, type OrderStatus } from "@/lib/types";
 import { formatDate, formatDateTime } from "@/lib/utils";
 
@@ -26,6 +26,7 @@ const EDITABLE: OrderStatus[] = [...TRACKING_FLOW, "cancelled"];
 export default function AdminOrderDetailPage() {
   const params = useParams<{ id: string }>();
   const { getOrder, setOrderStatus, hydrated } = useStore();
+  const t = useT();
   const order = getOrder(params.id);
 
   if (!hydrated) {
@@ -37,9 +38,9 @@ export default function AdminOrderDetailPage() {
       <Panel>
         <EmptyState
           icon={PackageSearch}
-          title="Order not found."
-          description={`No order matches ${params.id}.`}
-          actionLabel="Back to orders"
+          title={t.confirmation.notFound}
+          description={t.confirmation.notFoundDesc(params.id)}
+          actionLabel={t.admin.allOrders}
           actionHref="/admin/orders"
         />
       </Panel>
@@ -53,7 +54,7 @@ export default function AdminOrderDetailPage() {
         className="mb-4 inline-flex items-center gap-2 text-[0.82rem] text-clay-300 transition-colors hover:text-terracotta-500"
       >
         <ArrowLeft className="h-4 w-4" />
-        All orders
+        {t.admin.allOrders}
       </Link>
 
       <AdminHeading
@@ -67,7 +68,7 @@ export default function AdminOrderDetailPage() {
               target="_blank"
               className="inline-flex items-center gap-1.5 rounded-full border border-cream-500 bg-card px-3.5 py-2 text-[0.8rem] text-clay-500 transition-colors hover:border-terracotta-300 hover:text-terracotta-500"
             >
-              Customer view
+              {t.admin.customerView}
               <ExternalLink className="h-3.5 w-3.5" />
             </Link>
           </div>
@@ -82,7 +83,7 @@ export default function AdminOrderDetailPage() {
               htmlFor="status"
               className="mb-1.5 block text-[0.78rem] font-medium text-clay-400"
             >
-              Update order status
+              {t.admin.updateStatus}
             </label>
             <Select
               id="status"
@@ -91,7 +92,7 @@ export default function AdminOrderDetailPage() {
             >
               {EDITABLE.map((s) => (
                 <option key={s} value={s}>
-                  {STATUS_LABEL[s]}
+                  {t.status[s]}
                 </option>
               ))}
             </Select>
@@ -108,20 +109,20 @@ export default function AdminOrderDetailPage() {
 
       <div className="grid gap-5 xl:grid-cols-[1.5fr_1fr]">
         <div className="space-y-5">
-          <Panel title="Products" bodyClassName="px-5 pb-5">
+          <Panel title={t.admin.products} bodyClassName="px-5 pb-5">
             <OrderItems order={order} />
             <div className="mt-4 border-t border-cream-400 pt-4">
               <OrderTotals order={order} />
             </div>
           </Panel>
 
-          <Panel title="Order Timeline" bodyClassName="p-5">
+          <Panel title={t.admin.orderTimeline} bodyClassName="p-5">
             <OrderTimeline order={order} />
           </Panel>
         </div>
 
         <div className="space-y-5">
-          <Panel title="Customer" bodyClassName="p-5">
+          <Panel title={t.admin.customer} bodyClassName="p-5">
             <div className="flex items-center gap-3">
               <span className="grid h-11 w-11 place-items-center rounded-full bg-terracotta-50 font-display text-lg text-terracotta-500">
                 {order.customer.name.charAt(0)}
@@ -134,12 +135,12 @@ export default function AdminOrderDetailPage() {
               </div>
             </div>
             <dl className="mt-4 space-y-2.5 border-t border-cream-400 pt-4 text-[0.85rem]">
-              <Row icon={User} label="Customer ID" value={order.customerId} />
-              <Row icon={User} label="Phone" value={order.customer.phone} />
+              <Row icon={User} label={t.admin.customer} value={order.customerId} />
+              <Row icon={User} label={t.contact.phone} value={order.customer.phone} />
             </dl>
           </Panel>
 
-          <Panel title="Delivery Address" bodyClassName="p-5">
+          <Panel title={t.admin.deliveryAddress} bodyClassName="p-5">
             <address className="flex gap-3 not-italic text-[0.87rem] leading-relaxed text-clay-400">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-clay-200" />
               <span>
@@ -157,45 +158,45 @@ export default function AdminOrderDetailPage() {
             </address>
           </Panel>
 
-          <Panel title="Payment" bodyClassName="p-5">
+          <Panel title={t.confirmation.payment} bodyClassName="p-5">
             <dl className="space-y-2.5 text-[0.85rem]">
               <Row
                 icon={CreditCard}
-                label="Method"
-                value={PAYMENT_METHOD_LABEL[order.paymentMethod]}
+                label={t.track.method}
+                value={t.payment[order.paymentMethod]}
               />
               <div className="flex items-center justify-between gap-3">
                 <dt className="flex items-center gap-2 text-clay-300">
                   <CreditCard className="h-3.5 w-3.5" />
-                  Status
+                  {t.admin.statusCol}
                 </dt>
                 <dd>
                   <PaymentBadge status={order.paymentStatus} />
                 </dd>
               </div>
               {order.couponCode && (
-                <Row icon={CreditCard} label="Coupon" value={order.couponCode} />
+                <Row icon={CreditCard} label={t.cart.discount} value={order.couponCode} />
               )}
             </dl>
           </Panel>
 
-          <Panel title="Shipping" bodyClassName="p-5">
+          <Panel title={t.cart.shipping} bodyClassName="p-5">
             <dl className="space-y-2.5 text-[0.85rem]">
-              <Row icon={Truck} label="Courier" value={order.courier} />
+              <Row icon={Truck} label={t.track.courier} value={order.courier} />
               <Row
                 icon={Truck}
-                label="Tracking number"
+                label={t.track.trackingNumber}
                 value={order.trackingNumber}
                 mono
               />
               <Row
                 icon={Truck}
-                label="Method"
-                value={order.deliveryMethod === "express" ? "Express" : "Standard"}
+                label={t.track.method}
+                value={order.deliveryMethod === "express" ? t.checkout.express : t.checkout.standard}
               />
               <Row
                 icon={Truck}
-                label="Estimated delivery"
+                label={t.track.estimated}
                 value={formatDate(order.estimatedDelivery)}
               />
             </dl>

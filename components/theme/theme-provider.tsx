@@ -81,7 +81,7 @@ export const noFlashScript = `
   try {
     var s = localStorage.getItem("${THEME_KEY}");
     var t = s ? JSON.parse(s) : {};
-    var mode = t.mode || "system";
+    var mode = t.mode || "light";
     var accent = t.accent || "terracotta";
     var dark = mode === "dark" || (mode === "system" &&
       window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -111,7 +111,8 @@ function systemPrefersDark() {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setModeState] = useState<Mode>("system");
+  // Light is the brand default; "System" remains a choice in the picker.
+  const [mode, setModeState] = useState<Mode>("light");
   const [accent, setAccentState] = useState<Accent>("terracotta");
   const [systemDark, setSystemDark] = useState(false);
   const [ready, setReady] = useState(false);

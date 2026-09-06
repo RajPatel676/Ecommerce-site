@@ -13,22 +13,27 @@ import {
   User,
   X,
 } from "lucide-react";
-import { NAV } from "@/components/layout/header";
+import { navItems } from "@/components/layout/header";
 import { Logo } from "@/components/layout/logo";
 import { CATEGORIES } from "@/lib/data/products";
 import { useStore } from "@/components/store/store-provider";
+import { useT } from "@/components/i18n/language-provider";
+import type { Dict } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-const SECONDARY = [
-  { href: "/account", label: "My Account", icon: User },
-  { href: "/wishlist", label: "Wishlist", icon: Heart },
-  { href: "/track", label: "Track Order", icon: Package },
-  { href: "/faq", label: "Help & FAQ", icon: Phone },
+const secondary = (t: Dict) => [
+  { href: "/account", label: t.nav.account, icon: User },
+  { href: "/wishlist", label: t.nav.wishlist, icon: Heart },
+  { href: "/track", label: t.nav.track, icon: Package },
+  { href: "/faq", label: t.nav.help, icon: Phone },
 ];
 
 export function MobileNav() {
   const { menuOpen, setMenuOpen } = useStore();
   const pathname = usePathname();
+  const t = useT();
+  const NAV = navItems(t);
+  const SECONDARY = secondary(t);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenuOpen(false);
@@ -50,7 +55,7 @@ export function MobileNav() {
           <button
             type="button"
             onClick={() => setMenuOpen(false)}
-            aria-label="Close menu"
+            aria-label={t.nav.closeMenu}
             className="grid h-10 w-10 place-items-center rounded-full text-clay-400 transition-colors hover:bg-cream-300"
           >
             <X className="h-5 w-5" />
@@ -78,7 +83,7 @@ export function MobileNav() {
           </ul>
 
           <div className="px-6 pb-2 pt-1">
-            <p className="kicker">Shop by category</p>
+            <p className="kicker">{t.nav.shopByCategory}</p>
           </div>
           <ul className="grid grid-cols-2 gap-2.5 px-5 pb-5">
             {CATEGORIES.map((c) => (
@@ -121,7 +126,7 @@ export function MobileNav() {
 
         <div className="border-t border-cream-400 bg-cream-200 px-6 py-4">
           <p className="font-gujarati text-sm text-terracotta-400">
-            ઘરની હૂંફ, હાથની મહેનત.
+            {t.footer.tagline}
           </p>
           <p className="mt-1.5 flex items-center gap-1.5 text-[0.78rem] text-clay-300">
             <MapPin className="h-3.5 w-3.5" />

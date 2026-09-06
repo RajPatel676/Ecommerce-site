@@ -32,6 +32,7 @@ export interface Category {
   name: string;
   gujarati: string;
   blurb: string;
+  blurbGu: string;
   image: string;
 }
 
@@ -41,6 +42,7 @@ export const CATEGORIES: Category[] = [
     name: "Everyday Godadi",
     gujarati: "રોજિંદી ગોદડી",
     blurb: "Soft, washable and built for daily use.",
+    blurbGu: "નરમ, ધોઈ શકાય તેવી અને રોજ વાપરવા માટે બનેલી.",
     image: "/img/cat-everyday.webp",
   },
   {
@@ -48,6 +50,7 @@ export const CATEGORIES: Category[] = [
     name: "Premium Godadi",
     gujarati: "પ્રીમિયમ ગોદડી",
     blurb: "Finer cotton, denser stitching, heirloom finish.",
+    blurbGu: "ઝીણું કપાસ, ગીચ ટાંકા, વારસાગત ફિનિશ.",
     image: "/img/cat-premium.webp",
   },
   {
@@ -55,6 +58,7 @@ export const CATEGORIES: Category[] = [
     name: "Baby Godadi",
     gujarati: "બાળ ગોદડી",
     blurb: "Gentle weaves and rounded corners for little ones.",
+    blurbGu: "નાનાં બાળકો માટે નરમ વણાટ અને ગોળ ખૂણા.",
     image: "/img/cat-baby.webp",
   },
   {
@@ -62,6 +66,7 @@ export const CATEGORIES: Category[] = [
     name: "Double Bed",
     gujarati: "ડબલ બેડ",
     blurb: "Generous drape for shared beds.",
+    blurbGu: "સાથે સૂનારા માટે પૂરતી પહોળી.",
     image: "/img/cat-double.webp",
   },
   {
@@ -69,6 +74,7 @@ export const CATEGORIES: Category[] = [
     name: "Single Bed",
     gujarati: "સિંગલ બેડ",
     blurb: "Just right for a single bed or a reading corner.",
+    blurbGu: "સિંગલ પલંગ કે વાંચવાના ખૂણા માટે બરાબર.",
     image: "/img/cat-single.webp",
   },
   {
@@ -76,6 +82,7 @@ export const CATEGORIES: Category[] = [
     name: "Traditional Patchwork",
     gujarati: "પરંપરાગત પેચવર્ક",
     blurb: "Blocks pieced by hand, the way it has always been done.",
+    blurbGu: "હાથે જોડેલા ટુકડા, જેમ હંમેશાં બનતા આવ્યા છે.",
     image: "/img/cat-patchwork.webp",
   },
 ];

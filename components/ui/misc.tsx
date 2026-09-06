@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import Link from "next/link";
 import { Minus, Plus, Star } from "lucide-react";
@@ -5,7 +7,8 @@ import { cn, inr } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { Badge, ProductBadge } from "@/components/ui/badge";
-import { STATUS_LABEL, STATUS_TONE, PAYMENT_LABEL, PAYMENT_TONE } from "@/lib/status";
+import { STATUS_TONE, PAYMENT_TONE } from "@/lib/status";
+import { useT } from "@/components/i18n/language-provider";
 import type { OrderStatus, PaymentStatus } from "@/lib/types";
 
 /* ------------------------------------------------------------------ stars */
@@ -172,6 +175,7 @@ export function StatusBadge({
   status: OrderStatus;
   className?: string;
 }) {
+  const t = useT();
   return (
     <span
       className={cn(
@@ -181,12 +185,13 @@ export function StatusBadge({
       )}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-current" aria-hidden />
-      {STATUS_LABEL[status]}
+      {t.status[status]}
     </span>
   );
 }
 
 export function PaymentBadge({ status }: { status: PaymentStatus }) {
+  const t = useT();
   return (
     <span
       className={cn(
@@ -194,7 +199,7 @@ export function PaymentBadge({ status }: { status: PaymentStatus }) {
         PAYMENT_TONE[status],
       )}
     >
-      {PAYMENT_LABEL[status]}
+      {t.payment[status]}
     </span>
   );
 }

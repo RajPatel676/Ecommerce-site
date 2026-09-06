@@ -5,6 +5,7 @@ import { Check, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Textarea } from "@/components/ui/field";
 import { useStore } from "@/components/store/store-provider";
+import { useT } from "@/components/i18n/language-provider";
 
 interface Values {
   name: string;
@@ -15,6 +16,7 @@ interface Values {
 
 export function ContactForm() {
   const { toast } = useStore();
+  const t = useT();
   const [v, setV] = useState<Values>({ name: "", phone: "", email: "", message: "" });
   const [errors, setErrors] = useState<Partial<Values>>({});
   const [sending, setSending] = useState(false);
@@ -28,13 +30,13 @@ export function ContactForm() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const err: Partial<Values> = {};
-    if (v.name.trim().length < 2) err.name = "Please tell us your name.";
+    if (v.name.trim().length < 2) err.name = t.contact.errors.name;
     if (!/^(\+91[\s-]?)?[6-9]\d{9}$/.test(v.phone.replace(/\s/g, "")))
-      err.phone = "Enter a valid 10-digit mobile number.";
+      err.phone = t.contact.errors.phone;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email))
-      err.email = "Enter a valid email address.";
+      err.email = t.contact.errors.email;
     if (v.message.trim().length < 10)
-      err.message = "A line or two more would help us answer properly.";
+      err.message = t.contact.errors.message;
     setErrors(err);
     if (Object.keys(err).length) return;
 
@@ -43,8 +45,8 @@ export function ContactForm() {
     setSending(false);
     setSent(true);
     toast({
-      title: "Message sent",
-      description: "We usually reply within one working day.",
+      title: t.toast.messageSent,
+      description: t.toast.messageSentDesc,
       tone: "success",
     });
   };
@@ -56,14 +58,13 @@ export function ContactForm() {
           <Check className="h-7 w-7" strokeWidth={2.5} />
         </span>
         <h3 className="mt-5 font-display text-xl text-clay-600">
-          Thank you, {v.name.split(" ")[0]}.
+          {t.contact.thanks(v.name.split(" ")[0])}
         </h3>
         <p className="mt-2 max-w-sm text-[0.88rem] leading-relaxed text-clay-400">
-          Your message is with us. We reply to everything within one working day —
-          usually a lot sooner.
+          {t.contact.thanksBody}
         </p>
         <p className="mt-2 font-gujarati text-[0.85rem] text-terracotta-400">
-          આભાર — અમે જલદી જવાબ આપીશું.
+          {t.contact.thanksGu}
         </p>
         <Button
           variant="outline"
@@ -73,7 +74,7 @@ export function ContactForm() {
             setV({ name: "", phone: "", email: "", message: "" });
           }}
         >
-          Send another message
+          {t.contact.sendAnother}
         </Button>
       </div>
     );
@@ -81,17 +82,17 @@ export function ContactForm() {
 
   return (
     <form onSubmit={submit} noValidate className="grid gap-4 sm:grid-cols-2">
-      <Field label="Name" htmlFor="c-name" required error={errors.name}>
+      <Field label={t.contact.name} htmlFor="c-name" required error={errors.name}>
         <Input
           id="c-name"
           value={v.name}
           invalid={!!errors.name}
           onChange={(e) => set("name", e.target.value)}
-          placeholder="Your name"
+          placeholder=""
           autoComplete="name"
         />
       </Field>
-      <Field label="Phone" htmlFor="c-phone" required error={errors.phone}>
+      <Field label={t.contact.phone} htmlFor="c-phone" required error={errors.phone}>
         <Input
           id="c-phone"
           type="tel"
@@ -103,7 +104,7 @@ export function ContactForm() {
         />
       </Field>
       <Field
-        label="Email"
+        label={t.contact.email}
         htmlFor="c-email"
         required
         error={errors.email}
@@ -120,11 +121,11 @@ export function ContactForm() {
         />
       </Field>
       <Field
-        label="Message"
+        label={t.contact.message}
         htmlFor="c-message"
         required
         error={errors.message}
-        hint="Sizes, bulk orders, a custom colour — anything."
+        hint={t.contact.messageHint}
         className="sm:col-span-2"
       >
         <Textarea
@@ -132,13 +133,13 @@ export function ContactForm() {
           value={v.message}
           invalid={!!errors.message}
           onChange={(e) => set("message", e.target.value)}
-          placeholder="Tell us what you need…"
+          placeholder={t.contact.messagePlaceholder}
         />
       </Field>
       <div className="sm:col-span-2">
         <Button type="submit" size="lg" loading={sending}>
           {!sending && <Send className="h-4 w-4" />}
-          {sending ? "Sending…" : "Send Message"}
+          {sending ? t.contact.sending : t.contact.send}
         </Button>
       </div>
     </form>

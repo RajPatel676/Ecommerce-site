@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------------------------------------------------------------------------
+   Gujarati text face, self-hosted and subset to the 53 codepoints this app
+   actually uses (110 kB -> 72 kB). It is needed in BOTH languages because the
+   wordmark, the tagline and every product's second name are Gujarati script
+   even on the English site.
+   --------------------------------------------------------------------------- */
+@font-face {
+  font-family: "Gujarati Subset";
+  src: url("/fonts/gujarati-sans.woff2") format("woff2");
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0A80-0AFF, U+200C-200D, U+20B9, U+0030-0039;
+}
+
 @layer base {
   /* ------------------------------------------------------------------
      Theme tokens.
@@ -552,6 +567,34 @@
   h4 {
     @apply font-display tracking-[-0.01em];
     text-wrap: balance;
+  }
+
+  /* In Gujarati the whole page switches to Gujarati faces: Fraunces and Inter
+     have no Gujarati glyphs, so without this every string would fall back to
+     an unstyled system font. Gujarati also needs a little more line height —
+     the matras sit above and below the baseline. */
+  html[lang="gu"] body {
+    font-family: "Gujarati Subset", system-ui, sans-serif;
+    line-height: 1.7;
+  }
+
+  /* `.font-display` is used on card titles and headings alike; in Gujarati it
+     must resolve to the Gujarati serif, not fall through to Georgia. */
+  html[lang="gu"] .font-display,
+  html[lang="gu"] h1,
+  html[lang="gu"] h2,
+  html[lang="gu"] h3,
+  html[lang="gu"] h4 {
+    font-family: var(--font-gujarati-display), "Gujarati Subset", serif;
+    letter-spacing: 0;
+    line-height: 1.45;
+  }
+
+  /* Latin runs inside Gujarati copy — prices, order IDs, sizes — keep their
+     own face so ₹1,499 and GD20260906001 stay legible. */
+  html[lang="gu"] .font-mono,
+  html[lang="gu"] .tabular-nums {
+    font-family: var(--font-sans), ui-monospace, monospace;
   }
 
   p {

@@ -12,6 +12,7 @@ import { useStore } from "@/components/store/store-provider";
 import { CATEGORIES, PRODUCTS, SIZE_ORDER, SIZES } from "@/lib/data/products";
 import type { Product } from "@/lib/types";
 import { cn, inr } from "@/lib/utils";
+import { useT } from "@/components/i18n/language-provider";
 
 interface Draft {
   id: string;
@@ -61,6 +62,7 @@ const BLANK: Draft = {
 
 export default function AdminProductsPage() {
   const { toast } = useStore();
+  const t = useT();
   const [rows, setRows] = useState<Draft[]>(() => PRODUCTS.map(toDraft));
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState<Draft | null>(null);
@@ -101,7 +103,7 @@ export default function AdminProductsPage() {
   return (
     <>
       <AdminHeading
-        title="Products"
+        title={t.admin.products}
         description={`${rows.length} godadis in the catalogue.`}
         action={
           <div className="flex w-full flex-wrap gap-3 sm:w-auto">
@@ -110,14 +112,14 @@ export default function AdminProductsPage() {
               <Input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search products…"
-                aria-label="Search products"
+                placeholder={t.admin.searchProducts}
+                aria-label={t.admin.searchProducts}
                 className="h-11 pl-10"
               />
             </div>
             <Button onClick={() => setEditing({ ...BLANK })} className="shrink-0">
               <Plus className="h-4 w-4" />
-              Add Product
+              {t.admin.addProduct}
             </Button>
           </div>
         }
@@ -135,12 +137,12 @@ export default function AdminProductsPage() {
             <table className="w-full min-w-[52rem] text-left text-[0.85rem]">
               <thead className="border-b border-cream-400 bg-cream-200 text-[0.72rem] uppercase tracking-[0.1em] text-clay-300">
                 <tr>
-                  <Th>Product</Th>
-                  <Th>Category</Th>
-                  <Th>Price</Th>
-                  <Th>Stock</Th>
-                  <Th>Status</Th>
-                  <Th>Actions</Th>
+                  <Th>{t.admin.product}</Th>
+                  <Th>{t.shop.category}</Th>
+                  <Th>{t.shop.price}</Th>
+                  <Th>{t.admin.stock}</Th>
+                  <Th>{t.admin.statusCol}</Th>
+                  <Th>{t.admin.actions}</Th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-cream-400">
@@ -183,7 +185,7 @@ export default function AdminProductsPage() {
                     </Td>
                     <Td>
                       <Badge variant={p.active ? "leaf" : "default"}>
-                        {p.active ? "Active" : "Draft"}
+                        {p.active ? t.admin.active : t.admin.draft}
                       </Badge>
                     </Td>
                     <Td>

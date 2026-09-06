@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import {
   Clock,
@@ -11,54 +12,53 @@ import {
 } from "lucide-react";
 import { ContactForm } from "@/components/contact/contact-form";
 import { SectionHeading } from "@/components/ui/misc";
+import { useT } from "@/components/i18n/language-provider";
+import type { Dict } from "@/lib/i18n";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description:
-    "Talk to the Vasundhara Godadi workshop in Vadodara — WhatsApp, phone, email or the contact form.",
-};
-
-const CHANNELS = [
+const channels = (t: Dict) => [
   {
     icon: MessageCircle,
-    label: "WhatsApp",
+    label: t.contact.whatsapp,
     value: "+91 99046 22871",
-    note: "Fastest — usually answered within an hour",
+    note: t.contact.whatsappNote,
     href: "/contact",
   },
   {
     icon: Phone,
-    label: "Phone",
+    label: t.contact.phoneLabel,
     value: "+91 265 246 8890",
-    note: "Mon–Sat, 10am–7pm IST",
+    note: t.contact.phoneNote,
     href: "/contact",
   },
   {
     icon: Mail,
-    label: "Email",
-    value: "hello@vasundharagodadi.in",
-    note: "We reply within one working day",
+    label: t.contact.emailLabel,
+    value: "hello@hansabengodadi.in",
+    note: t.contact.emailNote,
     href: "/contact",
   },
 ];
 
 const HOURS = [
-  { d: "Monday – Friday", h: "10:00 am – 7:00 pm" },
-  { d: "Saturday", h: "10:00 am – 4:00 pm" },
-  { d: "Sunday", h: "Closed" },
+  { d: "Mon – Fri", h: "10:00 – 19:00" },
+  { d: "Sat", h: "10:00 – 16:00" },
+  { d: "Sun", h: "—" },
 ];
 
 export default function ContactPage() {
+  const t = useT();
+  const CHANNELS = channels(t);
+
   return (
     <>
       <section className="border-b border-cream-400 bg-cream-200 py-12 weave lg:py-16">
         <div className="container">
           <SectionHeading
             align="left"
-            kicker="Get in touch"
-            title="We answer every message ourselves."
-            gujarati="અમારો સંપર્ક કરો."
-            description="Questions about sizing, a bulk order for a wedding, or a colour you have in mind — write to us and a person from the workshop will reply."
+            kicker={t.contact.kicker}
+            title={t.contact.title}
+            gujarati={t.contact.titleGu}
+            description={t.contact.desc}
           />
         </div>
       </section>
@@ -68,7 +68,7 @@ export default function ContactPage() {
           {/* form */}
           <div>
             <h2 className="mb-6 font-display text-2xl text-clay-600">
-              Send us a message
+              {t.contact.sendMessage}
             </h2>
             <ContactForm />
           </div>
@@ -104,10 +104,10 @@ export default function ContactPage() {
             <div className="card-surface p-5">
               <h3 className="flex items-center gap-2 font-display text-[1.05rem] text-clay-600">
                 <MapPin className="h-4 w-4 text-terracotta-400" />
-                Workshop &amp; studio
+                {t.contact.workshop}
               </h3>
               <address className="mt-3 not-italic text-[0.88rem] leading-relaxed text-clay-400">
-                Vasundhara Godadi
+                Hansaben Godadi
                 <br />
                 3rd Floor, Aarya Corporate
                 <br />
@@ -116,15 +116,14 @@ export default function ContactPage() {
                 Gujarat, India
               </address>
               <p className="mt-3 text-[0.78rem] leading-relaxed text-clay-300">
-                Visits are welcome — please message first so someone is there to show
-                you around.
+                {t.contact.visitNote}
               </p>
             </div>
 
             <div className="card-surface p-5">
               <h3 className="flex items-center gap-2 font-display text-[1.05rem] text-clay-600">
                 <Clock className="h-4 w-4 text-terracotta-400" />
-                Business hours
+                {t.contact.hours}
               </h3>
               <dl className="mt-3 space-y-2 text-[0.86rem]">
                 {HOURS.map((h) => (
@@ -137,7 +136,7 @@ export default function ContactPage() {
             </div>
 
             <div className="card-surface p-5">
-              <h3 className="font-display text-[1.05rem] text-clay-600">Follow us</h3>
+              <h3 className="font-display text-[1.05rem] text-clay-600">{t.contact.followUs}</h3>
               <div className="mt-3 flex gap-2.5">
                 {[
                   { icon: Instagram, label: "Instagram" },
@@ -155,7 +154,7 @@ export default function ContactPage() {
                 ))}
               </div>
               <p className="mt-3 text-[0.72rem] text-clay-300">
-                Social links are placeholders in this prototype.
+                {t.contact.socialNote}
               </p>
             </div>
           </aside>

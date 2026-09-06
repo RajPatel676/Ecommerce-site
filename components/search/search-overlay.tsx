@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Clock, Search, X } from "lucide-react";
 import { useStore } from "@/components/store/store-provider";
+import { useT } from "@/components/i18n/language-provider";
 import { CATEGORIES, PRODUCTS } from "@/lib/data/products";
 import { Price } from "@/components/ui/misc";
 import { cn } from "@/lib/utils";
@@ -37,6 +38,7 @@ export function SearchOverlay() {
   const [q, setQ] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const t = useT();
 
   const results = useMemo(() => searchProducts(q).slice(0, 6), [q]);
 
@@ -69,7 +71,7 @@ export function SearchOverlay() {
       className="fixed inset-0 z-[85]"
       role="dialog"
       aria-modal="true"
-      aria-label="Search"
+      aria-label={t.search.label}
     >
       <div
         className="absolute inset-0 animate-fade-in bg-inverse/45 backdrop-blur-[3px]"
@@ -90,14 +92,14 @@ export function SearchOverlay() {
               ref={inputRef}
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search for cotton, baby godadi, patchwork…"
-              aria-label="Search products"
+              placeholder={t.search.placeholder}
+              aria-label={t.search.label}
               className="h-11 flex-1 border-0 bg-transparent font-display text-lg text-clay-600 placeholder:font-sans placeholder:text-[0.95rem] placeholder:text-clay-200 focus:outline-none"
             />
             <button
               type="button"
               onClick={() => setSearchOpen(false)}
-              aria-label="Close search"
+              aria-label={t.common.close}
               className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-clay-400 transition-colors hover:bg-cream-300"
             >
               <X className="h-5 w-5" />
@@ -111,19 +113,19 @@ export function SearchOverlay() {
             <div className="space-y-7">
               <section>
                 <div className="mb-3 flex items-center justify-between">
-                  <h3 className="kicker">Recent searches</h3>
+                  <h3 className="kicker">{t.search.recent}</h3>
                   {recentSearches.length > 0 && (
                     <button
                       type="button"
                       onClick={clearSearches}
                       className="text-[0.72rem] text-clay-300 hover:text-terracotta-500"
                     >
-                      Clear
+                      {t.search.clear}
                     </button>
                   )}
                 </div>
                 {recentSearches.length === 0 ? (
-                  <p className="text-[0.85rem] text-clay-300">Nothing yet.</p>
+                  <p className="text-[0.85rem] text-clay-300">{t.search.nothingYet}</p>
                 ) : (
                   <ul className="flex flex-wrap gap-2">
                     {recentSearches.map((r) => (
@@ -143,7 +145,7 @@ export function SearchOverlay() {
               </section>
 
               <section>
-                <h3 className="kicker mb-3">Popular categories</h3>
+                <h3 className="kicker mb-3">{t.search.popular}</h3>
                 <ul className="flex flex-wrap gap-2">
                   {CATEGORIES.map((c) => (
                     <li key={c.key}>
@@ -163,7 +165,7 @@ export function SearchOverlay() {
             {/* right: live results */}
             <div>
               <h3 className="kicker mb-3">
-                {q ? `${searchProducts(q).length} matches` : "Trending now"}
+                {q ? t.search.matches(searchProducts(q).length) : t.search.trending}
               </h3>
               <ul className="space-y-1">
                 {(q ? results : PRODUCTS.filter((p) => p.featured).slice(0, 5)).map(
@@ -204,10 +206,10 @@ export function SearchOverlay() {
               {q && results.length === 0 && (
                 <div className="rounded-2xl border border-dashed border-cream-500 p-8 text-center">
                   <p className="font-display text-[1.05rem] text-clay-600">
-                    No godadi matches “{q}”.
+                    {t.search.noMatch(q)}
                   </p>
                   <p className="mt-1.5 text-[0.85rem] text-clay-300">
-                    Try “cotton”, “patchwork” or “baby”.
+                    {t.search.noMatchHint}
                   </p>
                 </div>
               )}
@@ -221,7 +223,7 @@ export function SearchOverlay() {
                     "transition-colors hover:border-terracotta-200 hover:text-terracotta-500",
                   )}
                 >
-                  See all results for “{q}”
+                  {t.search.seeAll(q)}
                 </button>
               )}
             </div>

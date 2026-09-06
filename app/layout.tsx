@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter, Noto_Sans_Gujarati } from "next/font/google";
+import { Fraunces, Inter, Noto_Serif_Gujarati } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 import { StoreProvider } from "@/components/store/store-provider";
 import {
@@ -7,11 +8,16 @@ import {
   noFlashScript,
 } from "@/components/theme/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { LanguageProvider } from "@/components/i18n/language-provider";
+import { DEFAULT_LANG, LANG_COOKIE, isLang } from "@/lib/i18n";
 
+// Latin display face — only referenced when the page is in English, so it is
+// not preloaded and its class is only applied for that language.
 const display = Fraunces({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
+  preload: false,
 });
 
 const sans = Inter({
@@ -20,21 +26,25 @@ const sans = Inter({
   display: "swap",
 });
 
-const gujarati = Noto_Sans_Gujarati({
-  subsets: ["gujarati", "latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-gujarati",
+// Fraunces carries no Gujarati glyphs, so Gujarati headings need their own
+// display face. It is 115 kB, so it is never preloaded and its class is only
+// attached when the page is actually in Gujarati.
+const gujaratiDisplay = Noto_Serif_Gujarati({
+  subsets: ["gujarati"],
+  weight: ["600"],
+  variable: "--font-gujarati-display",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://vasundhara-godadi.example"),
+  metadataBase: new URL("https://hansaben-godadi.example"),
   title: {
-    default: "Vasundhara Godadi — Handcrafted warmth, made with tradition",
-    template: "%s · Vasundhara Godadi",
+    default: "Hansaben Godadi — Handcrafted warmth, made with tradition",
+    template: "%s · Hansaben Godadi",
   },
   description:
-    "વસુંધરા ગોદડી — traditional Gujarati godadi, pieced and quilted by hand. Premium cotton quilts for modern Indian homes.",
+    "હંસાબેન ગોદડી — traditional Gujarati godadi, pieced and quilted by hand. Premium cotton quilts for modern Indian homes.",
   keywords: [
     "godadi",
     "ગોદડી",
@@ -44,7 +54,7 @@ export const metadata: Metadata = {
     "patchwork",
   ],
   openGraph: {
-    title: "Vasundhara Godadi",
+    title: "Hansaben Godadi",
     description: "Handcrafted warmth, made with tradition.",
     type: "website",
     locale: "en_IN",
@@ -57,23 +67,40 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+/**
+ * Only attach the faces the page will actually render. Without this the
+ * English site downloads 150 kB of Gujarati fonts it never draws with, and
+ * the Gujarati site downloads Fraunces for headings it never uses.
+ */
+function fontClass(lang: string) {
+  const base = sans.variable;
+  return lang === "gu"
+    ? `${base} ${gujaratiDisplay.variable}`
+    : `${base} ${display.variable}`;
+}
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  // Read on the server so the first HTML is already in the right language.
+  const stored = cookies().get(LANG_COOKIE)?.value;
+  const lang = isLang(stored) ? stored : DEFAULT_LANG;
+
   return (
     <html
-      lang="en"
+      lang={lang}
       suppressHydrationWarning
-      className={`${display.variable} ${sans.variable} ${gujarati.variable}`}
+      className={fontClass(lang)}
     >
       <head>
         {/* Applies the saved theme before first paint — no light-mode flash. */}
         <script dangerouslySetInnerHTML={{ __html: noFlashScript }} />
       </head>
       <body className="min-h-dvh font-sans">
-        <ThemeProvider>
+        <LanguageProvider initialLang={lang}>
+          <ThemeProvider>
           <StoreProvider>
           <a
             href="#main"
@@ -84,7 +111,8 @@ export default function RootLayout({
           {children}
           <Toaster />
           </StoreProvider>
-        </ThemeProvider>
+          </ThemeProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

@@ -21,6 +21,8 @@ import { EmptyState } from "@/components/ui/misc";
 import type { Address, DeliveryMethod, PaymentMethod } from "@/lib/types";
 import { cn, inr } from "@/lib/utils";
 import { EXPRESS_SHIPPING } from "@/lib/data/orders";
+import { useT } from "@/components/i18n/language-provider";
+import { productName } from "@/lib/i18n/content";
 
 const STATES = [
   "Gujarat", "Maharashtra", "Rajasthan", "Madhya Pradesh", "Karnataka",
@@ -38,6 +40,7 @@ export function CheckoutClient() {
   const { hydrated, lines, subtotal, discount, coupon, shippingFor, placeOrder, cartCount } =
     useStore();
   const router = useRouter();
+  const t = useT();
 
   const [address, setAddress] = useState<Address>(EMPTY);
   const [errors, setErrors] = useState<Errors>({});
@@ -55,15 +58,15 @@ export function CheckoutClient() {
 
   const validate = () => {
     const e: Errors = {};
-    if (address.name.trim().length < 2) e.name = "Please tell us your name.";
+    if (address.name.trim().length < 2) e.name = t.checkout.errors.name;
     if (!/^(\+91[\s-]?)?[6-9]\d{9}$/.test(address.phone.replace(/\s/g, "")))
-      e.phone = "Enter a valid 10-digit Indian mobile number.";
+      e.phone = t.checkout.errors.phone;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(address.email))
-      e.email = "Enter a valid email address.";
-    if (address.house.trim().length < 2) e.house = "House or flat number is needed.";
-    if (address.street.trim().length < 3) e.street = "Street or area is needed.";
-    if (address.city.trim().length < 2) e.city = "Which city?";
-    if (!/^\d{6}$/.test(address.pincode)) e.pincode = "Pincode must be 6 digits.";
+      e.email = t.checkout.errors.email;
+    if (address.house.trim().length < 2) e.house = t.checkout.errors.house;
+    if (address.street.trim().length < 3) e.street = t.checkout.errors.street;
+    if (address.city.trim().length < 2) e.city = t.checkout.errors.city;
+    if (!/^\d{6}$/.test(address.pincode)) e.pincode = t.checkout.errors.pincode;
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -87,9 +90,9 @@ export function CheckoutClient() {
       <div className="container py-12">
         <EmptyState
           icon={ShoppingBag}
-          title="There is nothing to check out yet."
-          description="Add a godadi to your cart and this page will fill itself in."
-          actionLabel="Explore Godadi"
+          title={t.checkout.emptyTitle}
+          description={t.checkout.emptyDesc}
+          actionLabel={t.common.exploreGodadi}
           actionHref="/shop"
           className="rounded-3xl border border-dashed border-cream-500 bg-cream-200"
         />
@@ -101,20 +104,20 @@ export function CheckoutClient() {
     <div className="container py-8 lg:py-12">
       <div className="mb-8">
         <h1 className="text-[1.9rem] leading-tight text-clay-600 sm:text-[2.3rem]">
-          Checkout
+          {t.checkout.title}
         </h1>
         <p className="mt-1.5 flex items-center gap-1.5 text-[0.85rem] text-clay-300">
           <Lock className="h-3.5 w-3.5" />
-          Prototype checkout — no real payment is processed.
+          {t.checkout.note}
         </p>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_23rem] lg:gap-12">
         {/* ------------------------------------------------------------ form */}
         <div className="space-y-8">
-          <Section step={1} title="Contact Information">
+          <Section step={1} title={t.checkout.contact}>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Full name" htmlFor="name" required error={errors.name} className="sm:col-span-2">
+              <Field label={t.checkout.fullName} htmlFor="name" required error={errors.name} className="sm:col-span-2">
                 <div data-invalid={!!errors.name}>
                   <Input
                     id="name"
@@ -126,7 +129,7 @@ export function CheckoutClient() {
                   />
                 </div>
               </Field>
-              <Field label="Mobile number" htmlFor="phone" required error={errors.phone}>
+              <Field label={t.checkout.mobile} htmlFor="phone" required error={errors.phone}>
                 <div data-invalid={!!errors.phone}>
                   <Input
                     id="phone"
@@ -140,7 +143,7 @@ export function CheckoutClient() {
                   />
                 </div>
               </Field>
-              <Field label="Email" htmlFor="email" required error={errors.email}>
+              <Field label={t.checkout.email} htmlFor="email" required error={errors.email}>
                 <div data-invalid={!!errors.email}>
                   <Input
                     id="email"
@@ -156,9 +159,9 @@ export function CheckoutClient() {
             </div>
           </Section>
 
-          <Section step={2} title="Delivery Address">
+          <Section step={2} title={t.checkout.address}>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="House / Flat" htmlFor="house" required error={errors.house}>
+              <Field label={t.checkout.house} htmlFor="house" required error={errors.house}>
                 <div data-invalid={!!errors.house}>
                   <Input
                     id="house"
@@ -169,7 +172,7 @@ export function CheckoutClient() {
                   />
                 </div>
               </Field>
-              <Field label="Street / Area" htmlFor="street" required error={errors.street}>
+              <Field label={t.checkout.street} htmlFor="street" required error={errors.street}>
                 <div data-invalid={!!errors.street}>
                   <Input
                     id="street"
@@ -180,7 +183,7 @@ export function CheckoutClient() {
                   />
                 </div>
               </Field>
-              <Field label="City" htmlFor="city" required error={errors.city}>
+              <Field label={t.checkout.city} htmlFor="city" required error={errors.city}>
                 <div data-invalid={!!errors.city}>
                   <Input
                     id="city"
@@ -191,7 +194,7 @@ export function CheckoutClient() {
                   />
                 </div>
               </Field>
-              <Field label="State" htmlFor="state" required>
+              <Field label={t.checkout.state} htmlFor="state" required>
                 <select
                   id="state"
                   value={address.state}
@@ -203,7 +206,7 @@ export function CheckoutClient() {
                   ))}
                 </select>
               </Field>
-              <Field label="Pincode" htmlFor="pincode" required error={errors.pincode}>
+              <Field label={t.checkout.pincode} htmlFor="pincode" required error={errors.pincode}>
                 <div data-invalid={!!errors.pincode}>
                   <Input
                     id="pincode"
@@ -219,17 +222,17 @@ export function CheckoutClient() {
             </div>
           </Section>
 
-          <Section step={3} title="Delivery Method">
+          <Section step={3} title={t.checkout.deliveryMethod}>
             <div className="grid gap-3 sm:grid-cols-2">
               <Choice
                 selected={delivery === "standard"}
                 onSelect={() => setDelivery("standard")}
                 icon={Truck}
-                title="Standard Delivery"
-                subtitle="4–6 working days"
+                title={t.checkout.standard}
+                subtitle={t.checkout.standardDays}
                 right={
                   shippingFor("standard") === 0 ? (
-                    <span className="text-leaf-400">Free</span>
+                    <span className="text-leaf-400">{t.common.free}</span>
                   ) : (
                     inr(shippingFor("standard"))
                   )
@@ -240,69 +243,68 @@ export function CheckoutClient() {
                 selected={delivery === "express"}
                 onSelect={() => setDelivery("express")}
                 icon={Zap}
-                title="Express Delivery"
-                subtitle="2–3 working days"
+                title={t.checkout.express}
+                subtitle={t.checkout.expressDays}
                 right={inr(EXPRESS_SHIPPING)}
                 name="delivery"
               />
             </div>
           </Section>
 
-          <Section step={4} title="Payment Method">
+          <Section step={4} title={t.checkout.paymentMethod}>
             <div className="space-y-3">
               <Choice
                 selected={payment === "upi"}
                 onSelect={() => setPayment("upi")}
                 icon={Smartphone}
-                title="UPI"
-                subtitle="GPay, PhonePe, Paytm and every UPI app"
+                title={t.checkout.upi}
+                subtitle={t.checkout.upiSub}
                 name="payment"
               />
               <Choice
                 selected={payment === "card"}
                 onSelect={() => setPayment("card")}
                 icon={CreditCard}
-                title="Credit / Debit Card"
-                subtitle="Visa, Mastercard, RuPay, Amex"
+                title={t.checkout.card}
+                subtitle={t.checkout.cardSub}
                 name="payment"
               />
               <Choice
                 selected={payment === "cod"}
                 onSelect={() => setPayment("cod")}
                 icon={BadgeIndianRupee}
-                title="Cash on Delivery"
-                subtitle="Pay the delivery partner when it arrives"
+                title={t.checkout.cod}
+                subtitle={t.checkout.codSub}
                 name="payment"
               />
             </div>
 
             {payment === "upi" && (
               <div className="mt-4 animate-fade-in rounded-xl border border-cream-500 bg-cream-200 p-4">
-                <Field label="UPI ID" htmlFor="upi" hint="Any value works — this is a prototype.">
+                <Field label={t.checkout.upiId} htmlFor="upi" hint={t.checkout.upiHint}>
                   <Input id="upi" placeholder="yourname@okhdfcbank" />
                 </Field>
               </div>
             )}
             {payment === "card" && (
               <div className="mt-4 grid animate-fade-in gap-4 rounded-xl border border-cream-500 bg-cream-200 p-4 sm:grid-cols-2">
-                <Field label="Card number" htmlFor="cardno" className="sm:col-span-2">
+                <Field label={t.checkout.cardNumber} htmlFor="cardno" className="sm:col-span-2">
                   <Input id="cardno" inputMode="numeric" placeholder="4111 1111 1111 1111" />
                 </Field>
-                <Field label="Expiry" htmlFor="exp">
+                <Field label={t.checkout.expiry} htmlFor="exp">
                   <Input id="exp" placeholder="MM / YY" />
                 </Field>
-                <Field label="CVV" htmlFor="cvv">
+                <Field label={t.checkout.cvv} htmlFor="cvv">
                   <Input id="cvv" inputMode="numeric" maxLength={4} placeholder="•••" />
                 </Field>
                 <p className="text-[0.72rem] text-clay-300 sm:col-span-2">
-                  Nothing is transmitted anywhere — the form is a mock.
+                  {t.checkout.cardNote}
                 </p>
               </div>
             )}
             {payment === "cod" && (
               <p className="mt-4 animate-fade-in rounded-xl border border-mustard-200 bg-mustard-50 p-4 text-[0.82rem] text-clay-500">
-                Keep {inr(total)} ready. Our delivery partner accepts cash and UPI at
-                the door.
+                {t.checkout.codNote(inr(total))}
               </p>
             )}
           </Section>
@@ -312,12 +314,12 @@ export function CheckoutClient() {
         <aside className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:self-start">
           <div className="card-surface p-5">
             <div className="flex items-baseline justify-between">
-              <h2 className="font-display text-xl text-clay-600">Your Order</h2>
+              <h2 className="font-display text-xl text-clay-600">{t.checkout.yourOrder}</h2>
               <Link
                 href="/cart"
                 className="text-[0.78rem] text-terracotta-500 hover:underline"
               >
-                Edit
+                {t.common.edit}
               </Link>
             </div>
 
@@ -332,10 +334,10 @@ export function CheckoutClient() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[0.85rem] font-medium text-clay-600">
-                      {l.product.name}
+                      {productName(l.product, t)}
                     </p>
                     <p className="text-[0.72rem] text-clay-300">
-                      {l.sizeLabel} · {l.variantLabel}
+                      {t.sizes[l.size]} · {l.variantLabel}
                     </p>
                   </div>
                   <p className="text-[0.85rem] font-semibold text-clay-600">
@@ -347,23 +349,23 @@ export function CheckoutClient() {
 
             <dl className="mt-5 space-y-2.5 border-t border-cream-400 pt-4 text-[0.86rem]">
               <div className="flex justify-between text-clay-400">
-                <dt>Subtotal ({cartCount})</dt>
+                <dt>{t.cart.subtotal} ({cartCount})</dt>
                 <dd className="tabular-nums">{inr(subtotal)}</dd>
               </div>
               {discount > 0 && (
                 <div className="flex justify-between text-leaf-400">
-                  <dt>Discount {coupon ? `(${coupon.code})` : ""}</dt>
+                  <dt>{t.cart.discount} {coupon ? `(${coupon.code})` : ""}</dt>
                   <dd className="tabular-nums">−{inr(discount)}</dd>
                 </div>
               )}
               <div className="flex justify-between text-clay-400">
-                <dt>Shipping</dt>
+                <dt>{t.cart.shipping}</dt>
                 <dd className="tabular-nums">
-                  {shipping === 0 ? <span className="text-leaf-400">Free</span> : inr(shipping)}
+                  {shipping === 0 ? <span className="text-leaf-400">{t.common.free}</span> : inr(shipping)}
                 </dd>
               </div>
               <div className="flex items-baseline justify-between border-t border-cream-400 pt-3.5 text-lg font-semibold text-clay-600">
-                <dt>Total</dt>
+                <dt>{t.cart.total}</dt>
                 <dd className="tabular-nums">{inr(total)}</dd>
               </div>
             </dl>
@@ -376,15 +378,15 @@ export function CheckoutClient() {
               onClick={pay}
             >
               {processing
-                ? "Processing payment…"
+                ? t.checkout.processing
                 : payment === "cod"
-                  ? `Place Order · ${inr(total)}`
-                  : `Pay Now · ${inr(total)}`}
+                  ? `${t.checkout.placeOrder} · ${inr(total)}`
+                  : `${t.checkout.payNow} · ${inr(total)}`}
             </Button>
 
             <p className="mt-3 flex items-center justify-center gap-1.5 text-[0.72rem] text-clay-300">
               <Package className="h-3.5 w-3.5" />
-              Wrapped in muslin, dispatched from Vadodara
+              {t.checkout.wrapped}
             </p>
           </div>
         </aside>

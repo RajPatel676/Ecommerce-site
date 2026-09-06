@@ -7,12 +7,13 @@ import { useStore } from "@/components/store/store-provider";
 import { OrderItems, OrderTotals } from "@/components/order/order-items";
 import { buttonVariants } from "@/components/ui/button-variants";
 import { EmptyState, PaymentBadge, StatusBadge } from "@/components/ui/misc";
-import { PAYMENT_METHOD_LABEL } from "@/lib/status";
+import { useT } from "@/components/i18n/language-provider";
 import { cn, formatDate } from "@/lib/utils";
 
 export default function OrderConfirmationPage() {
   const params = useParams<{ id: string }>();
   const { getOrder, hydrated } = useStore();
+  const t = useT();
   const order = getOrder(params.id);
 
   if (!hydrated) {
@@ -28,9 +29,9 @@ export default function OrderConfirmationPage() {
       <div className="container py-12">
         <EmptyState
           icon={PackageSearch}
-          title="We could not find that order."
-          description={`No order matches ${params.id}. Check the ID, or look it up on the tracking page.`}
-          actionLabel="Track an order"
+          title={t.confirmation.notFound}
+          description={t.confirmation.notFoundDesc(params.id)}
+          actionLabel={t.confirmation.trackAnOrder}
           actionHref="/track"
           className="rounded-3xl border border-dashed border-cream-500 bg-cream-200"
         />
@@ -47,28 +48,28 @@ export default function OrderConfirmationPage() {
             <Check className="h-9 w-9" strokeWidth={2.5} />
           </span>
           <h1 className="mt-6 text-[1.9rem] leading-tight text-clay-600 sm:text-[2.4rem]">
-            Thank you for your order!
+            {t.confirmation.title}
           </h1>
           <p className="mx-auto mt-3 max-w-lg text-[0.98rem] leading-relaxed text-clay-400">
-            Your Godadi is now on its way to becoming part of your home.
+            {t.confirmation.body}
           </p>
           <p className="mt-2 font-gujarati text-[0.92rem] text-terracotta-400">
-            આભાર — તમારી ગોદડી ટૂંક સમયમાં તમારા ઘરે પહોંચશે.
+            {t.confirmation.gu}
           </p>
         </div>
 
         {/* ------------------------------------------------------ order meta */}
         <div className="card-surface mt-9 overflow-hidden">
           <div className="grid divide-y divide-cream-400 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
-            <Meta label="Order ID" value={order.id} mono />
-            <Meta label="Order date" value={formatDate(order.placedAt)} />
+            <Meta label={t.confirmation.orderId} value={order.id} mono />
+            <Meta label={t.confirmation.orderDate} value={formatDate(order.placedAt)} />
             <Meta
-              label="Estimated delivery"
+              label={t.confirmation.estimated}
               value={formatDate(order.estimatedDelivery)}
             />
             <Meta
-              label="Payment"
-              value={PAYMENT_METHOD_LABEL[order.paymentMethod]}
+              label={t.confirmation.payment}
+              value={t.payment[order.paymentMethod]}
               badge={<PaymentBadge status={order.paymentStatus} />}
             />
           </div>
@@ -82,7 +83,7 @@ export default function OrderConfirmationPage() {
             </span>
             <div>
               <p className="text-[0.75rem] uppercase tracking-[0.14em] text-clay-300">
-                Current status
+                {t.confirmation.currentStatus}
               </p>
               <div className="mt-1">
                 <StatusBadge status={order.status} />
@@ -99,7 +100,7 @@ export default function OrderConfirmationPage() {
         {/* -------------------------------------------------------- summary */}
         <div className="mt-5 grid gap-5 lg:grid-cols-[1.3fr_1fr]">
           <div className="card-surface p-5">
-            <h2 className="font-display text-lg text-clay-600">Order Summary</h2>
+            <h2 className="font-display text-lg text-clay-600">{t.confirmation.summary}</h2>
             <div className="mt-3">
               <OrderItems order={order} />
             </div>
@@ -111,7 +112,7 @@ export default function OrderConfirmationPage() {
           <div className="card-surface p-5">
             <h2 className="flex items-center gap-2 font-display text-lg text-clay-600">
               <MapPin className="h-4 w-4 text-clay-300" />
-              Delivering to
+              {t.confirmation.deliveringTo}
             </h2>
             <address className="mt-3 not-italic text-[0.88rem] leading-relaxed text-clay-400">
               <span className="block font-medium text-clay-600">
@@ -127,8 +128,7 @@ export default function OrderConfirmationPage() {
               <span className="block text-clay-300">{order.customer.email}</span>
             </address>
             <p className="mt-4 rounded-xl bg-cream-200 p-3 text-[0.78rem] leading-relaxed text-clay-300">
-              A confirmation has been sent to {order.customer.email}. This is a
-              prototype, so no email actually leaves the building.
+              {t.confirmation.emailNote(order.customer.email)}
             </p>
           </div>
         </div>
@@ -139,13 +139,13 @@ export default function OrderConfirmationPage() {
             href={`/track?order=${order.id}`}
             className={cn(buttonVariants({ size: "lg" }))}
           >
-            Track My Order
+            {t.confirmation.trackOrder}
           </Link>
           <Link
             href="/shop"
             className={cn(buttonVariants({ variant: "outline", size: "lg" }))}
           >
-            Continue Shopping
+            {t.confirmation.continueShopping}
           </Link>
         </div>
       </div>

@@ -9,9 +9,11 @@ import { useStore } from "@/components/store/store-provider";
 import { COUPONS } from "@/lib/data/customers";
 import type { Coupon } from "@/lib/types";
 import { formatDate, inr } from "@/lib/utils";
+import { useT } from "@/components/i18n/language-provider";
 
 export default function AdminCouponsPage() {
   const { toast } = useStore();
+  const t = useT();
   const [rows, setRows] = useState<Coupon[]>(COUPONS);
 
   const toggle = (code: string) => {
@@ -24,7 +26,7 @@ export default function AdminCouponsPage() {
   return (
     <>
       <AdminHeading
-        title="Coupons"
+        title={t.admin.coupons}
         description="Discount codes customers can apply at checkout."
         action={
           <Button
@@ -81,7 +83,7 @@ export default function AdminCouponsPage() {
                   <Td>
                     <button type="button" onClick={() => toggle(c.code)}>
                       <Badge variant={c.active ? "leaf" : "default"}>
-                        {c.active ? "Active" : "Inactive"}
+                        {c.active ? t.admin.active : t.admin.inactive}
                       </Badge>
                     </button>
                   </Td>
