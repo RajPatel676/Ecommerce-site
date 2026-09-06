@@ -1,0 +1,655 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ------------------------------------------------------------------
+     Theme tokens.
+
+     Every palette colour is a CSS variable, so `bg-cream-100` keeps its
+     meaning ("the page ground") while its value changes with the theme.
+
+     Each accent is a COMPLETE palette: grounds, surfaces, borders, text and
+     accent all shift hue together, so choosing "Indigo" recolours the whole
+     site rather than only the buttons. Status colours (rating gold, success
+     green, danger red) are deliberately identical everywhere — a "Delivered"
+     badge has to read as green in every theme.
+
+     Generated and contrast-checked; see the theming notes in README.md.
+     ------------------------------------------------------------------ */
+
+  :root {
+    /* Terracotta — the default warm Kutch red · light */
+    --c-cream-50: 253 250 244;
+    --c-cream-100: 250 245 236;
+    --c-cream-200: 245 237 224;
+    --c-cream-300: 239 227 208;
+    --c-cream-400: 229 213 189;
+    --c-cream-500: 216 196 166;
+    --c-clay-50: 247 241 233;
+    --c-clay-100: 234 220 201;
+    --c-clay-200: 163 131 91;
+    --c-clay-300: 131 88 48;
+    --c-clay-400: 117 73 44;
+    --c-clay-500: 92 58 46;
+    --c-clay-600: 67 42 32;
+    --c-clay-700: 46 29 22;
+    --c-terracotta-50: 250 242 240;
+    --c-terracotta-100: 242 221 217;
+    --c-terracotta-200: 221 170 160;
+    --c-terracotta-300: 200 116 98;
+    --c-terracotta-400: 188 86 64;
+    --c-terracotta-500: 180 67 43;
+    --c-terracotta-600: 155 59 38;
+    --c-terracotta-700: 131 50 32;
+    --c-mustard-50: 251 245 225;
+    --c-mustard-100: 243 231 198;
+    --c-mustard-200: 227 194 92;
+    --c-mustard-300: 201 162 39;
+    --c-mustard-400: 133 106 17;
+    --c-leaf-50: 240 244 239;
+    --c-leaf-100: 221 229 218;
+    --c-leaf-200: 157 179 155;
+    --c-leaf-300: 94 115 88;
+    --c-leaf-400: 74 107 93;
+    --c-leaf-500: 46 74 63;
+    --c-rose-50: 251 240 241;
+    --c-rose-100: 243 218 214;
+    --c-rose-200: 224 139 150;
+    --c-rose-300: 181 68 90;
+    --c-rose-400: 126 43 60;
+    --c-card: 255 255 255;
+    --c-inverse: 67 42 32;
+    --c-inverse-2: 92 58 46;
+    --c-on-inverse: 253 250 244;
+    --c-on-inverse-muted: 205 184 156;
+    --c-on-accent: 253 250 244;
+    --c-ink: 46 29 22;
+  }
+
+  .dark {
+    /* Terracotta — the default warm Kutch red · dark */
+    --c-cream-50: 20 16 13;
+    --c-cream-100: 23 18 15;
+    --c-cream-200: 30 23 18;
+    --c-cream-300: 42 33 26;
+    --c-cream-400: 56 44 36;
+    --c-cream-500: 74 58 46;
+    --c-clay-50: 34 26 21;
+    --c-clay-100: 46 36 29;
+    --c-clay-200: 122 106 92;
+    --c-clay-300: 160 142 124;
+    --c-clay-400: 190 172 153;
+    --c-clay-500: 224 210 193;
+    --c-clay-600: 244 234 220;
+    --c-clay-700: 251 246 238;
+    --c-terracotta-50: 51 31 24;
+    --c-terracotta-100: 71 41 30;
+    --c-terracotta-200: 128 67 48;
+    --c-terracotta-300: 227 127 97;
+    --c-terracotta-400: 225 119 86;
+    --c-terracotta-500: 224 113 79;
+    --c-terracotta-600: 228 133 104;
+    --c-terracotta-700: 232 150 125;
+    --c-mustard-50: 46 39 20;
+    --c-mustard-100: 66 55 26;
+    --c-mustard-200: 150 124 52;
+    --c-mustard-300: 223 186 74;
+    --c-mustard-400: 236 205 118;
+    --c-leaf-50: 26 38 32;
+    --c-leaf-100: 36 52 44;
+    --c-leaf-200: 92 122 104;
+    --c-leaf-300: 127 168 144;
+    --c-leaf-400: 145 186 162;
+    --c-leaf-500: 170 205 182;
+    --c-rose-50: 50 26 32;
+    --c-rose-100: 70 34 42;
+    --c-rose-200: 176 96 112;
+    --c-rose-300: 224 121 140;
+    --c-rose-400: 236 154 170;
+    --c-card: 34 26 21;
+    --c-inverse: 36 27 21;
+    --c-inverse-2: 48 37 29;
+    --c-on-inverse: 244 234 220;
+    --c-on-inverse-muted: 184 164 141;
+    --c-on-accent: 20 16 13;
+    --c-ink: 244 234 220;
+  }
+
+  [data-accent="indigo"] {
+    /* Indigo — cool natural-dye blues · light */
+    --c-cream-50: 247 249 250;
+    --c-cream-100: 239 243 247;
+    --c-cream-200: 227 234 242;
+    --c-cream-300: 213 223 234;
+    --c-cream-400: 195 208 223;
+    --c-cream-500: 173 190 209;
+    --c-clay-50: 240 240 240;
+    --c-clay-100: 217 218 218;
+    --c-clay-200: 126 127 128;
+    --c-clay-300: 88 86 91;
+    --c-clay-400: 79 74 82;
+    --c-clay-500: 68 62 70;
+    --c-clay-600: 49 45 50;
+    --c-clay-700: 34 31 34;
+    --c-terracotta-50: 240 242 243;
+    --c-terracotta-100: 217 221 225;
+    --c-terracotta-200: 161 170 180;
+    --c-terracotta-300: 100 114 132;
+    --c-terracotta-400: 67 84 106;
+    --c-terracotta-500: 46 65 89;
+    --c-terracotta-600: 43 57 76;
+    --c-terracotta-700: 40 49 64;
+    --c-mustard-50: 251 245 225;
+    --c-mustard-100: 243 231 198;
+    --c-mustard-200: 227 194 92;
+    --c-mustard-300: 201 162 39;
+    --c-mustard-400: 133 106 17;
+    --c-leaf-50: 240 244 239;
+    --c-leaf-100: 221 229 218;
+    --c-leaf-200: 157 179 155;
+    --c-leaf-300: 94 115 88;
+    --c-leaf-400: 74 107 93;
+    --c-leaf-500: 46 74 63;
+    --c-rose-50: 251 240 241;
+    --c-rose-100: 243 218 214;
+    --c-rose-200: 224 139 150;
+    --c-rose-300: 181 68 90;
+    --c-rose-400: 126 43 60;
+    --c-card: 255 255 255;
+    --c-inverse: 40 44 59;
+    --c-inverse-2: 57 61 81;
+    --c-on-inverse: 247 249 250;
+    --c-on-inverse-muted: 168 179 193;
+    --c-on-accent: 253 250 244;
+    --c-ink: 34 31 34;
+  }
+
+  .dark[data-accent="indigo"] {
+    /* Indigo — cool natural-dye blues · dark */
+    --c-cream-50: 13 16 20;
+    --c-cream-100: 15 19 23;
+    --c-cream-200: 18 24 30;
+    --c-cream-300: 26 34 42;
+    --c-cream-400: 36 45 56;
+    --c-cream-500: 46 59 74;
+    --c-clay-50: 28 27 27;
+    --c-clay-100: 38 37 37;
+    --c-clay-200: 107 106 107;
+    --c-clay-300: 142 142 142;
+    --c-clay-400: 172 172 171;
+    --c-clay-500: 209 209 208;
+    --c-clay-600: 232 233 232;
+    --c-clay-700: 245 245 244;
+    --c-terracotta-50: 37 38 40;
+    --c-terracotta-100: 47 52 58;
+    --c-terracotta-200: 76 92 109;
+    --c-terracotta-300: 137 170 202;
+    --c-terracotta-400: 129 164 198;
+    --c-terracotta-500: 124 160 196;
+    --c-terracotta-600: 142 173 204;
+    --c-terracotta-700: 158 185 211;
+    --c-mustard-50: 46 39 20;
+    --c-mustard-100: 66 55 26;
+    --c-mustard-200: 150 124 52;
+    --c-mustard-300: 223 186 74;
+    --c-mustard-400: 236 205 118;
+    --c-leaf-50: 26 38 32;
+    --c-leaf-100: 36 52 44;
+    --c-leaf-200: 92 122 104;
+    --c-leaf-300: 127 168 144;
+    --c-leaf-400: 145 186 162;
+    --c-leaf-500: 170 205 182;
+    --c-rose-50: 50 26 32;
+    --c-rose-100: 70 34 42;
+    --c-rose-200: 176 96 112;
+    --c-rose-300: 224 121 140;
+    --c-rose-400: 236 154 170;
+    --c-card: 21 27 34;
+    --c-inverse: 22 28 35;
+    --c-inverse-2: 30 38 47;
+    --c-on-inverse: 224 233 240;
+    --c-on-inverse-muted: 143 163 182;
+    --c-on-accent: 20 16 13;
+    --c-ink: 232 233 232;
+  }
+
+  [data-accent="morpankh"] {
+    /* Morpankh — peacock teal · light */
+    --c-cream-50: 247 253 249;
+    --c-cream-100: 240 251 245;
+    --c-cream-200: 228 247 238;
+    --c-cream-300: 214 241 229;
+    --c-cream-400: 197 232 216;
+    --c-cream-500: 176 219 199;
+    --c-clay-50: 240 244 239;
+    --c-clay-100: 218 227 215;
+    --c-clay-200: 128 148 121;
+    --c-clay-300: 91 110 83;
+    --c-clay-400: 81 95 75;
+    --c-clay-500: 70 75 65;
+    --c-clay-600: 50 54 47;
+    --c-clay-700: 34 37 32;
+    --c-terracotta-50: 240 245 244;
+    --c-terracotta-100: 216 228 227;
+    --c-terracotta-200: 157 188 184;
+    --c-terracotta-300: 94 145 139;
+    --c-terracotta-400: 59 122 114;
+    --c-terracotta-500: 37 107 98;
+    --c-terracotta-600: 35 92 84;
+    --c-terracotta-700: 33 78 70;
+    --c-mustard-50: 251 245 225;
+    --c-mustard-100: 243 231 198;
+    --c-mustard-200: 227 194 92;
+    --c-mustard-300: 201 162 39;
+    --c-mustard-400: 133 106 17;
+    --c-leaf-50: 240 244 239;
+    --c-leaf-100: 221 229 218;
+    --c-leaf-200: 157 179 155;
+    --c-leaf-300: 94 115 88;
+    --c-leaf-400: 74 107 93;
+    --c-leaf-500: 46 74 63;
+    --c-rose-50: 251 240 241;
+    --c-rose-100: 243 218 214;
+    --c-rose-200: 224 139 150;
+    --c-rose-300: 181 68 90;
+    --c-rose-400: 126 43 60;
+    --c-card: 255 255 255;
+    --c-inverse: 42 62 53;
+    --c-inverse-2: 59 85 73;
+    --c-on-inverse: 248 252 249;
+    --c-on-inverse-muted: 170 205 185;
+    --c-on-accent: 253 250 244;
+    --c-ink: 34 37 32;
+  }
+
+  .dark[data-accent="morpankh"] {
+    /* Morpankh — peacock teal · dark */
+    --c-cream-50: 13 21 18;
+    --c-cream-100: 16 24 21;
+    --c-cream-200: 19 31 27;
+    --c-cream-300: 27 44 37;
+    --c-cream-400: 37 58 50;
+    --c-cream-500: 48 78 66;
+    --c-clay-50: 28 30 26;
+    --c-clay-100: 38 41 36;
+    --c-clay-200: 108 113 104;
+    --c-clay-300: 143 150 138;
+    --c-clay-400: 173 180 167;
+    --c-clay-500: 210 216 205;
+    --c-clay-600: 233 239 229;
+    --c-clay-700: 245 248 243;
+    --c-terracotta-50: 33 42 37;
+    --c-terracotta-100: 40 59 53;
+    --c-terracotta-200: 60 106 97;
+    --c-terracotta-300: 111 195 180;
+    --c-terracotta-400: 101 191 175;
+    --c-terracotta-500: 95 188 172;
+    --c-terracotta-600: 117 197 184;
+    --c-terracotta-700: 137 205 194;
+    --c-mustard-50: 46 39 20;
+    --c-mustard-100: 66 55 26;
+    --c-mustard-200: 150 124 52;
+    --c-mustard-300: 223 186 74;
+    --c-mustard-400: 236 205 118;
+    --c-leaf-50: 26 38 32;
+    --c-leaf-100: 36 52 44;
+    --c-leaf-200: 92 122 104;
+    --c-leaf-300: 127 168 144;
+    --c-leaf-400: 145 186 162;
+    --c-leaf-500: 170 205 182;
+    --c-rose-50: 50 26 32;
+    --c-rose-100: 70 34 42;
+    --c-rose-200: 176 96 112;
+    --c-rose-300: 224 121 140;
+    --c-rose-400: 236 154 170;
+    --c-card: 22 35 30;
+    --c-inverse: 23 37 31;
+    --c-inverse-2: 31 50 42;
+    --c-on-inverse: 226 245 234;
+    --c-on-inverse-muted: 146 190 170;
+    --c-on-accent: 20 16 13;
+    --c-ink: 233 239 229;
+  }
+
+  [data-accent="banni"] {
+    /* Banni — grassland plum · light */
+    --c-cream-50: 254 246 247;
+    --c-cream-100: 253 238 241;
+    --c-cream-200: 250 225 232;
+    --c-cream-300: 246 210 220;
+    --c-cream-400: 238 191 205;
+    --c-cream-500: 228 169 186;
+    --c-clay-50: 247 237 237;
+    --c-clay-100: 235 211 210;
+    --c-clay-200: 165 112 112;
+    --c-clay-300: 133 69 72;
+    --c-clay-400: 119 59 65;
+    --c-clay-500: 93 52 59;
+    --c-clay-600: 68 37 42;
+    --c-clay-700: 47 25 29;
+    --c-terracotta-50: 245 242 244;
+    --c-terracotta-100: 228 220 225;
+    --c-terracotta-200: 188 169 181;
+    --c-terracotta-300: 145 113 134;
+    --c-terracotta-400: 122 82 107;
+    --c-terracotta-500: 107 63 91;
+    --c-terracotta-600: 94 55 78;
+    --c-terracotta-700: 81 48 65;
+    --c-mustard-50: 251 245 225;
+    --c-mustard-100: 243 231 198;
+    --c-mustard-200: 227 194 92;
+    --c-mustard-300: 201 162 39;
+    --c-mustard-400: 133 106 17;
+    --c-leaf-50: 240 244 239;
+    --c-leaf-100: 221 229 218;
+    --c-leaf-200: 157 179 155;
+    --c-leaf-300: 94 115 88;
+    --c-leaf-400: 74 107 93;
+    --c-leaf-500: 46 74 63;
+    --c-rose-50: 251 240 241;
+    --c-rose-100: 243 218 214;
+    --c-rose-200: 224 139 150;
+    --c-rose-300: 181 68 90;
+    --c-rose-400: 126 43 60;
+    --c-card: 255 255 255;
+    --c-inverse: 74 30 44;
+    --c-inverse-2: 102 43 62;
+    --c-on-inverse: 254 246 247;
+    --c-on-inverse-muted: 215 161 173;
+    --c-on-accent: 253 250 244;
+    --c-ink: 47 25 29;
+  }
+
+  .dark[data-accent="banni"] {
+    /* Banni — grassland plum · dark */
+    --c-cream-50: 23 12 16;
+    --c-cream-100: 26 14 19;
+    --c-cream-200: 34 16 23;
+    --c-cream-300: 48 23 33;
+    --c-cream-400: 63 33 45;
+    --c-cream-500: 84 41 59;
+    --c-clay-50: 34 24 25;
+    --c-clay-100: 46 33 34;
+    --c-clay-200: 122 100 101;
+    --c-clay-300: 160 134 134;
+    --c-clay-400: 190 164 164;
+    --c-clay-500: 224 203 202;
+    --c-clay-600: 244 228 227;
+    --c-clay-700: 251 242 242;
+    --c-terracotta-50: 48 35 38;
+    --c-terracotta-100: 65 47 54;
+    --c-terracotta-200: 115 81 100;
+    --c-terracotta-300: 205 151 186;
+    --c-terracotta-400: 201 144 181;
+    --c-terracotta-500: 199 139 178;
+    --c-terracotta-600: 207 155 189;
+    --c-terracotta-700: 214 169 198;
+    --c-mustard-50: 46 39 20;
+    --c-mustard-100: 66 55 26;
+    --c-mustard-200: 150 124 52;
+    --c-mustard-300: 223 186 74;
+    --c-mustard-400: 236 205 118;
+    --c-leaf-50: 26 38 32;
+    --c-leaf-100: 36 52 44;
+    --c-leaf-200: 92 122 104;
+    --c-leaf-300: 127 168 144;
+    --c-leaf-400: 145 186 162;
+    --c-leaf-500: 170 205 182;
+    --c-rose-50: 50 26 32;
+    --c-rose-100: 70 34 42;
+    --c-rose-200: 176 96 112;
+    --c-rose-300: 224 121 140;
+    --c-rose-400: 236 154 170;
+    --c-card: 39 19 27;
+    --c-inverse: 41 19 27;
+    --c-inverse-2: 55 26 37;
+    --c-on-inverse: 249 222 229;
+    --c-on-inverse-muted: 199 138 159;
+    --c-on-accent: 20 16 13;
+    --c-ink: 244 228 227;
+  }
+
+  [data-accent="vann"] {
+    /* Vann — forest green · light */
+    --c-cream-50: 247 253 247;
+    --c-cream-100: 240 250 241;
+    --c-cream-200: 229 246 232;
+    --c-cream-300: 216 241 220;
+    --c-cream-400: 199 231 204;
+    --c-cream-500: 178 218 185;
+    --c-clay-50: 241 244 237;
+    --c-clay-100: 219 227 210;
+    --c-clay-200: 130 147 111;
+    --c-clay-300: 93 109 71;
+    --c-clay-400: 83 94 64;
+    --c-clay-500: 71 74 59;
+    --c-clay-600: 51 54 42;
+    --c-clay-700: 35 37 29;
+    --c-terracotta-50: 242 244 243;
+    --c-terracotta-100: 220 227 224;
+    --c-terracotta-200: 169 185 178;
+    --c-terracotta-300: 113 140 129;
+    --c-terracotta-400: 82 115 102;
+    --c-terracotta-500: 63 99 85;
+    --c-terracotta-600: 57 86 73;
+    --c-terracotta-700: 51 72 61;
+    --c-mustard-50: 251 245 225;
+    --c-mustard-100: 243 231 198;
+    --c-mustard-200: 227 194 92;
+    --c-mustard-300: 201 162 39;
+    --c-mustard-400: 133 106 17;
+    --c-leaf-50: 240 244 239;
+    --c-leaf-100: 221 229 218;
+    --c-leaf-200: 157 179 155;
+    --c-leaf-300: 94 115 88;
+    --c-leaf-400: 74 107 93;
+    --c-leaf-500: 46 74 63;
+    --c-rose-50: 251 240 241;
+    --c-rose-100: 243 218 214;
+    --c-rose-200: 224 139 150;
+    --c-rose-300: 181 68 90;
+    --c-rose-400: 126 43 60;
+    --c-card: 255 255 255;
+    --c-inverse: 43 61 44;
+    --c-inverse-2: 61 84 61;
+    --c-on-inverse: 248 252 247;
+    --c-on-inverse-muted: 172 204 172;
+    --c-on-accent: 253 250 244;
+    --c-ink: 35 37 29;
+  }
+
+  .dark[data-accent="vann"] {
+    /* Vann — forest green · dark */
+    --c-cream-50: 14 21 15;
+    --c-cream-100: 16 24 17;
+    --c-cream-200: 19 31 22;
+    --c-cream-300: 28 44 31;
+    --c-cream-400: 38 58 42;
+    --c-cream-500: 49 77 55;
+    --c-clay-50: 28 30 24;
+    --c-clay-100: 39 40 33;
+    --c-clay-200: 109 113 99;
+    --c-clay-300: 144 150 132;
+    --c-clay-400: 174 180 162;
+    --c-clay-500: 210 216 200;
+    --c-clay-600: 233 238 226;
+    --c-clay-700: 245 248 241;
+    --c-terracotta-50: 37 41 35;
+    --c-terracotta-100: 47 58 49;
+    --c-terracotta-200: 76 104 88;
+    --c-terracotta-300: 138 190 166;
+    --c-terracotta-400: 130 186 160;
+    --c-terracotta-500: 125 183 156;
+    --c-terracotta-600: 143 193 170;
+    --c-terracotta-700: 159 202 182;
+    --c-mustard-50: 46 39 20;
+    --c-mustard-100: 66 55 26;
+    --c-mustard-200: 150 124 52;
+    --c-mustard-300: 223 186 74;
+    --c-mustard-400: 236 205 118;
+    --c-leaf-50: 26 38 32;
+    --c-leaf-100: 36 52 44;
+    --c-leaf-200: 92 122 104;
+    --c-leaf-300: 127 168 144;
+    --c-leaf-400: 145 186 162;
+    --c-leaf-500: 170 205 182;
+    --c-rose-50: 50 26 32;
+    --c-rose-100: 70 34 42;
+    --c-rose-200: 176 96 112;
+    --c-rose-300: 224 121 140;
+    --c-rose-400: 236 154 170;
+    --c-card: 22 35 25;
+    --c-inverse: 23 37 25;
+    --c-inverse-2: 32 49 34;
+    --c-on-inverse: 227 244 227;
+    --c-on-inverse-muted: 148 189 153;
+    --c-on-accent: 20 16 13;
+    --c-ink: 233 238 226;
+  }
+
+  :root {
+    --header-h: 64px;
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --header-h: 76px;
+    }
+  }
+
+  * {
+    @apply border-cream-400;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-cream-100 text-ink antialiased;
+    font-feature-settings: "kern" 1, "liga" 1;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  /* The artwork is painted on warm cream grounds, so a full-bleed editorial
+     image glares against a dark page. Product shots are left alone — a lit
+     object on a dark page is the point. */
+  .dark .img-editorial {
+    filter: brightness(0.78) saturate(0.92);
+  }
+
+  ::selection {
+    @apply bg-terracotta-200/60 text-clay-600;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display tracking-[-0.01em];
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-terracotta-400 ring-offset-2 ring-offset-cream-100 rounded-sm;
+  }
+
+  /* Slim, warm scrollbars */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-cream-200;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-cream-500 rounded-full border-2 border-cream-200;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-clay-200;
+  }
+}
+
+@layer components {
+  /* Hand-stitch divider used across editorial sections */
+  .stitch-line {
+    height: 2px;
+    background-image: repeating-linear-gradient(
+      90deg,
+      currentColor 0 10px,
+      transparent 10px 20px
+    );
+  }
+
+  .kicker {
+    @apply text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-terracotta-500;
+  }
+
+  .card-surface {
+    @apply rounded-2xl border border-cream-400 bg-card shadow-soft;
+  }
+
+  .link-underline {
+    @apply relative after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-current after:transition-all after:duration-300 hover:after:w-full;
+  }
+
+  .skeleton {
+    @apply relative overflow-hidden bg-cream-300;
+  }
+  .skeleton::after {
+    content: "";
+    @apply absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white/60 to-transparent;
+  }
+
+  /* Subtle woven paper texture for large editorial blocks */
+  .weave {
+    background-image: linear-gradient(
+        45deg,
+        rgba(46, 29, 22, 0.022) 25%,
+        transparent 25%,
+        transparent 75%,
+        rgba(46, 29, 22, 0.022) 75%
+      ),
+      linear-gradient(
+        45deg,
+        rgba(46, 29, 22, 0.022) 25%,
+        transparent 25%,
+        transparent 75%,
+        rgba(46, 29, 22, 0.022) 75%
+      );
+    background-size: 8px 8px;
+    background-position: 0 0, 4px 4px;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
